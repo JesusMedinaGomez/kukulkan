@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 import os
 from tinymce.models import HTMLField
+from cloudinary.models import CloudinaryField
 
 # ============================================
 # CONFIGURACIÓN GENERAL DEL SITIO 
@@ -131,10 +132,10 @@ class Pagina(models.Model):
     titulo = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     subtitulo = models.CharField(max_length=300, blank=True)
-    contenido = models.TextField()
+    contenido = HTMLField()
     contenido_resumido = models.TextField(max_length=500, blank=True)
     
-    imagen_destacada = models.ImageField(upload_to='paginas/', blank=True, null=True)
+    imagen_destacada = CloudinaryField('image', blank=True, null=True)
     imagen_descripcion = models.CharField(max_length=200, blank=True)
     
     meta_titulo = models.CharField(max_length=200, blank=True)
@@ -181,7 +182,7 @@ class SeccionPagina(models.Model):
     titulo = models.CharField(max_length=200)
     subtitulo = models.CharField(max_length=300, blank=True)
     tipo = models.CharField(max_length=20, choices=TIPO_SECCION, default='texto')
-    contenido = models.TextField(blank=True)
+    contenido = HTMLField(blank=True)
     orden = models.PositiveIntegerField(default=0)
     fondo_oscuro = models.BooleanField(default=False)
     ancho_completo = models.BooleanField(default=False)
@@ -199,7 +200,6 @@ class SeccionPagina(models.Model):
 # ============================================
 # PRINCIPIOS Y VALORES
 # ============================================
-
 
 class Principio(models.Model):
     """Principios y valores masónicos"""
@@ -223,10 +223,9 @@ class Principio(models.Model):
     
     orden = models.PositiveIntegerField(default=0)
     destacado = models.BooleanField(default=False)
-    
     es_activo = models.BooleanField(default=True, verbose_name='Activo')
     
-    imagen = models.ImageField(upload_to='principios/', blank=True, null=True)
+    imagen = CloudinaryField('image', blank=True, null=True)
     
     class Meta:
         ordering = ['columna', 'orden']
@@ -235,6 +234,7 @@ class Principio(models.Model):
     
     def __str__(self):
         return self.titulo
+
 
 # ============================================
 # HISTORIA Y LÍNEA DE TIEMPO
@@ -245,10 +245,10 @@ class EventoHistorico(models.Model):
     titulo = models.CharField(max_length=200)
     fecha = models.DateField()
     fecha_texto = models.CharField(max_length=50, blank=True)
-    descripcion = models.TextField()
+    descripcion = HTMLField()
     descripcion_corta = models.CharField(max_length=200, blank=True)
     
-    imagen = models.ImageField(upload_to='historia/eventos/', blank=True, null=True)
+    imagen = CloudinaryField('image', blank=True, null=True)
     video_url = models.URLField(blank=True)
     
     orden = models.PositiveIntegerField(default=0)
@@ -279,7 +279,7 @@ class ImagenHistorica(models.Model):
     """Galería de imágenes históricas"""
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
-    imagen = models.ImageField(upload_to='historia/galeria/')
+    imagen = CloudinaryField('image')
     fecha = models.DateField(null=True, blank=True)
     
     CATEGORIA = [
@@ -416,8 +416,8 @@ class Miembro(models.Model):
     telefono = models.CharField(max_length=20, blank=True)
     direccion = models.TextField(blank=True)
     
-    foto = models.ImageField(upload_to='miembros/', blank=True, null=True)
-    firma = models.ImageField(upload_to='firmas/', blank=True, null=True)
+    foto = CloudinaryField('image', blank=True, null=True)
+    firma = CloudinaryField('image', blank=True, null=True)
     
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_ingreso = models.DateField(null=True, blank=True)
@@ -440,10 +440,8 @@ class Miembro(models.Model):
     
     @property
     def antiguedad_anios(self):
-        """Calcula la antigüedad en años del miembro"""
         if not self.fecha_ingreso:  
             return 0  
-        
         hoy = timezone.now().date()
         return hoy.year - self.fecha_ingreso.year
 
@@ -457,7 +455,7 @@ class Curso(models.Model):
     titulo = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     descripcion_corta = models.CharField(max_length=300)
-    descripcion_larga = models.TextField()
+    descripcion_larga = HTMLField()
     
     GRADO = [
         ('aprendiz', 'Aprendiz'),
@@ -478,7 +476,7 @@ class Curso(models.Model):
     url_moodle = models.URLField(blank=True)
     url_recurso = models.URLField(blank=True)
     
-    imagen_portada = models.ImageField(upload_to='cursos/', blank=True, null=True)
+    imagen_portada = CloudinaryField('image', blank=True, null=True)
     
     es_activo = models.BooleanField(default=True)
     destacado = models.BooleanField(default=False)
@@ -555,7 +553,7 @@ class BibliotecaDigital(models.Model):
     archivo_pdf = models.FileField(upload_to='biblioteca/', blank=True)
     url_externa = models.URLField(blank=True)
     
-    portada = models.ImageField(upload_to='biblioteca/portadas/', blank=True, null=True)
+    portada = CloudinaryField('image', blank=True, null=True)
     
     disponible = models.BooleanField(default=True)
     solo_miembros = models.BooleanField(default=True)
@@ -589,7 +587,7 @@ class Evento(models.Model):
     ]
     tipo = models.CharField(max_length=30, choices=TIPO, default='tenida_regular')
     
-    descripcion = models.TextField()
+    descripcion = HTMLField()
     descripcion_corta = models.CharField(max_length=300, blank=True)
     
     fecha_inicio = models.DateTimeField(null=True, blank=True)
@@ -603,7 +601,7 @@ class Evento(models.Model):
     cupo_maximo = models.PositiveIntegerField(default=0, blank=True)
     asistentes = models.ManyToManyField(Miembro, blank=True, related_name='eventos_asistidos')
     
-    imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
+    imagen = CloudinaryField('image', blank=True, null=True)
     
     es_publico = models.BooleanField(default=False)
     es_activo = models.BooleanField(default=True)
@@ -618,12 +616,14 @@ class Evento(models.Model):
         verbose_name_plural = 'Eventos'
     
     def __str__(self):
-        return f"{self.fecha_inicio.strftime('%d/%m/%Y')} - {self.titulo}"
+        if self.fecha_inicio:
+            return f"{self.fecha_inicio.strftime('%d/%m/%Y')} - {self.titulo}"
+        return self.titulo
     
     @property
     def esta_proximo(self):
         hoy = timezone.now()
-        return self.fecha_inicio > hoy
+        return self.fecha_inicio and self.fecha_inicio > hoy
 
 
 class Tenida(models.Model):
@@ -789,7 +789,7 @@ class Publicacion(models.Model):
     contenido = HTMLField()
     resumen = models.TextField(max_length=500, blank=True)
     
-    imagen_destacada = models.ImageField(upload_to='publicaciones/', blank=True, null=True)
+    imagen_destacada = CloudinaryField('image', blank=True, null=True)
     video_url = models.URLField(blank=True)
     
     autor = models.ForeignKey(User, on_delete=models.SET_NULL, 
@@ -824,7 +824,7 @@ class Carrusel(models.Model):
     """Slides para el carrusel principal"""
     titulo = models.CharField(max_length=200)
     subtitulo = models.CharField(max_length=300, blank=True)
-    imagen = models.ImageField(upload_to='carrusel/')
+    imagen = CloudinaryField('image')
     enlace = models.URLField(blank=True)
     texto_boton = models.CharField(max_length=50, default='Conocer más')
     
@@ -852,7 +852,7 @@ class Testimonial(models.Model):
     autor = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, blank=True)
     contenido = models.TextField(max_length=500)
-    foto = models.ImageField(upload_to='testimonios/', blank=True, null=True)
+    foto = CloudinaryField('image', blank=True, null=True)
     
     fecha = models.DateField(default=timezone.now)
     orden = models.PositiveIntegerField(default=0)
@@ -895,6 +895,7 @@ class FraseCelebre(models.Model):
     def __str__(self):
         return f"{self.autor}: {self.contenido[:50]}..."
     
+
 # ============================================
 # ESTADÍSTICAS Y CONTADORES DINÁMICOS
 # ============================================
@@ -916,7 +917,6 @@ class Estadistica(models.Model):
     ]
     categoria = models.CharField(max_length=20, choices=CATEGORIA, default='general')
     
-    # Para estadísticas calculadas automáticamente
     es_automatica = models.BooleanField(default=False, help_text='Si está activo, el valor se calcula automáticamente')
     tipo_automatico = models.CharField(
         max_length=50,
@@ -932,7 +932,6 @@ class Estadistica(models.Model):
         ],
         blank=True
     )
-
     
     orden = models.PositiveIntegerField(default=0)
     es_activo = models.BooleanField(default=True)
@@ -947,7 +946,6 @@ class Estadistica(models.Model):
         return f"{self.titulo}: {self.valor}"
     
     def get_valor_calculado(self):
-        """Calcula el valor automático si corresponde"""
         if not self.es_automatica:
             return self.valor
             
@@ -978,6 +976,7 @@ class Estadistica(models.Model):
         
         return self.valor
 
+
 # ============================================
 # LOGIAS DEL MUNDO
 # ============================================
@@ -998,12 +997,10 @@ class Logia(models.Model):
     bandera = models.CharField(max_length=10, default='🏛️', verbose_name='Bandera/Emoji')
     categoria = models.CharField(max_length=20, choices=CATEGORIA, verbose_name='Categoría')
     
-    # Orden y visibilidad
     orden = models.PositiveIntegerField(default=0, verbose_name='Orden')
     es_activo = models.BooleanField(default=True, verbose_name='Activo')
     destacado = models.BooleanField(default=False, verbose_name='Destacado')
     
-    # Metadatos
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     
@@ -1017,7 +1014,6 @@ class Logia(models.Model):
     
     @property
     def fundacion_display(self):
-        """Muestra el año de fundación o 'Desconocido'"""
         return str(self.fundacion) if self.fundacion else '—'
     
 
@@ -1031,12 +1027,10 @@ class Actividad(models.Model):
     descripcion = models.TextField(blank=True, verbose_name='Descripción')
     icono = models.CharField(max_length=50, default='→', verbose_name='Icono')
     
-    # Orden y visibilidad
     orden = models.PositiveIntegerField(default=0, verbose_name='Orden')
     es_activo = models.BooleanField(default=True, verbose_name='Activo')
     destacado = models.BooleanField(default=False, verbose_name='Destacado')
     
-    # Metadatos
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     
