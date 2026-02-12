@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Principios | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Principios y valores masónicos de la Logia Kukulkan #41: fraternidad, conocimiento, integridad, tradición y filantropía. Conoce las columnas que sostienen nuestra institución.{% endblock %}
+
+{% block content %}
+
+<!-- Hero de principios -->
+<section class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-borgoña/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+    <div class="text-center max-w-4xl mx-auto">
+      <span class="inline-block px-4 py-2 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm uppercase tracking-[0.2em] font-medium mb-6">
+        ∴ Los valores que nos unen ∴
+      </span>
+      
+      {% if principles_page %}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
+          {{ principles_page.titulo }}
+        </h1>
+        {% if principles_page.subtitulo %}
+          <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
+            {{ principles_page.subtitulo }}
+          </p>
+        {% endif %}
+      {% else %}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
+          Sobre el <span class="text-borgoña dark:text-gold">yunque</span> y el <span class="text-borgoña dark:text-gold">cincel</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
+          Nuestros principios no son meras palabras inscritas en pergaminos; son herramientas 
+          de trabajo diario para construir una versión mejor de nosotros mismos.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Contenido de la página de principios -->
+{% if principles_page and principles_page.contenido %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{ principles_page.contenido|safe }}
+  </div>
+</section>
+{% endif %}
+
+<!-- Principios en formato de columnas del templo -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="grid lg:grid-cols-2 gap-12">
+    
+    <!-- Columna del Norte -->
+    <div class="space-y-8">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-16 h-16 bg-borgoña/10 rounded-2xl flex items-center justify-center">
+          <span class="text-borgoña dark:text-gold text-3xl">☽</span>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Columna del Norte</h2>
+          <p class="text-gray-600 dark:text-gray-400">Sabiduría y fortaleza</p>
+        </div>
+      </div>
+      
+      {% for principio in north_principles %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 hover:border-gold/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+            <span class="text-gold text-3xl">{{ principio.simbolo|default:'∴' }}</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{{ principio.titulo }}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+              {{ principio.descripcion_larga|default:principio.descripcion_corta }}
+            </p>
+            {% if principio.frase %}
+              <span class="text-gold text-sm italic">"{{ principio.frase }}"</span>
+              {% if principio.autor_frase %}
+                <span class="text-xs text-gray-500 dark:text-gray-500 block mt-1">— {{ principio.autor_frase }}</span>
+              {% endif %}
+            {% endif %}
+            
+            {% if principio.imagen %}
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <img src="{{ principio.imagen.url }}" alt="{{ principio.titulo }}" class="w-full h-40 object-cover rounded-lg">
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <!-- Principios por defecto -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center">
+            <span class="text-gold text-3xl">∴</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Fraternidad</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+              No es mera cortesía, sino reconocimiento del otro como parte de uno mismo. 
+              El lazo que une a los masones trasciende lo social y se convierte en compromiso real.
+            </p>
+            <span class="text-gold text-sm italic">"Cada hermano es un espejo"</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center">
+            <span class="text-gold text-3xl">◈</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Integridad</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+              Coherencia entre lo que se piensa, lo que se dice y lo que se hace. 
+              La escuadra y el nivel no son solo símbolos, sino guías de conducta.
+            </p>
+            <span class="text-gold text-sm italic">"Rectitud de pensamiento y acción"</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Columna del Sur -->
+    <div class="space-y-8">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center">
+          <span class="text-gold text-3xl">☀</span>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Columna del Sur</h2>
+          <p class="text-gray-600 dark:text-gray-400">Belleza y conocimiento</p>
+        </div>
+      </div>
+      
+      {% for principio in south_principles %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 hover:border-gold/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+            <span class="text-gold text-3xl">{{ principio.simbolo|default:'⌖' }}</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{{ principio.titulo }}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+              {{ principio.descripcion_larga|default:principio.descripcion_corta }}
+            </p>
+            {% if principio.frase %}
+              <span class="text-gold text-sm italic">"{{ principio.frase }}"</span>
+              {% if principio.autor_frase %}
+                <span class="text-xs text-gray-500 dark:text-gray-500 block mt-1">— {{ principio.autor_frase }}</span>
+              {% endif %}
+            {% endif %}
+            
+            {% if principio.imagen %}
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <img src="{{ principio.imagen.url }}" alt="{{ principio.titulo }}" class="w-full h-40 object-cover rounded-lg">
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center">
+            <span class="text-gold text-3xl">⌖</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Conocimiento</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+              La ignorancia es la única oscuridad que el masón combate. Buscamos la luz 
+              del saber en todas sus formas: filosófica, científica, artística y espiritual.
+            </p>
+            <span class="text-gold text-sm italic">"La luz disipa las sombras"</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center">
+            <span class="text-gold text-3xl">⚜️</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Tradición</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+              No somos innovadores por capricho, sino guardianes de una cadena de transmisión 
+              que viene de siglos. Preservamos para transformar.
+            </p>
+            <span class="text-gold text-sm italic">"Lo viejo se renueva"</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Principios centrales -->
+{% if central_principles %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  {% for principio in central_principles %}
+  <div class="relative max-w-4xl mx-auto">
+    <div class="absolute inset-0 bg-gradient-to-r from-gold/5 to-borgoña/5 rounded-4xl blur-2xl"></div>
+    <div class="relative bg-white dark:bg-gray-900 rounded-3xl border-2 border-gold/30 p-12 text-center">
+      <div class="w-20 h-20 bg-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <span class="text-gold text-4xl">{{ principio.simbolo|default:'❤️' }}</span>
+      </div>
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ principio.titulo }}</h3>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        {{ principio.descripcion_larga|default:principio.descripcion_corta }}
+      </p>
+      {% if principio.frase %}
+      <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
+        <span class="text-gold text-lg font-serif italic">"{{ principio.frase }}"</span>
+        {% if principio.autor_frase %}
+          <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">— {{ principio.autor_frase }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<!-- Juramento masónico -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+  <p class="text-sm text-gray-500 dark:text-gray-500 uppercase tracking-[0.3em] mb-6">Juramento del masón</p>
+  <blockquote class="text-2xl md:text-3xl font-light text-gray-700 dark:text-gray-300 italic max-w-3xl mx-auto leading-relaxed border-l-4 border-gold pl-8 text-left">
+    "Prometo buscar la verdad, practicar la virtud, trabajar por la felicidad de mis semejantes 
+    y vivir con dignidad hasta el último de mis días."
+  </blockquote>
+  <p class="mt-6 text-gray-600 dark:text-gray-400">— Tradición masónica universal</p>
+</section>
+
+<!-- Frase destacada -->
+{% if featured_phrase %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+  <div class="bg-gray-50 dark:bg-gray-900/50 rounded-3xl p-10 text-center">
+    <span class="text-gold text-2xl mb-4 block">❝</span>
+    <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 italic max-w-3xl mx-auto">
+      {{ featured_phrase.contenido }}
+    </p>
+    <p class="mt-4 text-gold font-medium">— {{ featured_phrase.autor }}</p>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block title %}Búsqueda | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Resultados de búsqueda en el sitio web de la Logia Kukulkan #41. Encuentra publicaciones, cursos, eventos y más.{% endblock %}
+
+{% block content %}
+
+<!-- Hero de búsqueda -->
+<section class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 py-24 md:py-32 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-20 w-64 h-64 bg-borgoña/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <span class="inline-block px-4 py-2 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm uppercase tracking-[0.2em] font-medium mb-6">
+      ∴ Buscar ∴
+    </span>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+      {% if query %}
+        Resultados para: <span class="text-gold">"{{ query }}"</span>
+      {% else %}
+        Búsqueda
+      {% endif %}
+    </h1>
+    
+    <!-- Formulario de búsqueda -->
+    <form method="get" action="{% url 'search' %}" class="max-w-2xl mx-auto mt-8">
+      <div class="relative">
+        <input type="text" 
+               name="q" 
+               value="{{ query }}"
+               placeholder="Buscar publicaciones, cursos, eventos..." 
+               class="w-full px-6 py-4 pl-14 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 rounded-2xl focus:border-gold focus:ring-4 focus:ring-gold/20 transition-all duration-300 text-lg"
+               autofocus>
+        <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" 
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        {% if query %}
+        <a href="{% url 'search' %}" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gold transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</section>
+
+{% if query %}
+  <!-- Resultados -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <!-- Pestañas de resultados -->
+    <div class="flex border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto">
+      <button onclick="showTab('all')" id="tab-all-btn" class="tab-active px-6 py-3 text-sm font-medium border-b-2 border-gold text-gold whitespace-nowrap">
+        Todos ({{ total_publications|default:0|add:total_courses|default:0|add:total_events|default:0|add:total_pages|default:0 }})
+      </button>
+      <button onclick="showTab('publications')" id="tab-publications-btn" class="px-6 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gold whitespace-nowrap border-b-2 border-transparent">
+        Publicaciones ({{ total_publications|default:0 }})
+      </button>
+      <button onclick="showTab('courses')" id="tab-courses-btn" class="px-6 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gold whitespace-nowrap border-b-2 border-transparent">
+        Cursos ({{ total_courses|default:0 }})
+      </button>
+      <button onclick="showTab('events')" id="tab-events-btn" class="px-6 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gold whitespace-nowrap border-b-2 border-transparent">
+        Eventos ({{ total_events|default:0 }})
+      </button>
+      <button onclick="showTab('pages')" id="tab-pages-btn" class="px-6 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gold whitespace-nowrap border-b-2 border-transparent">
+        Páginas ({{ total_pages|default:0 }})
+      </button>
+    </div>
+    
+    <!-- Contenido: Todos -->
+    <div id="all-content" class="block">
+      {% if publication_results or course_results or event_results or page_results %}
+        <!-- Publicaciones -->
+        {% if publication_results %}
+        <div class="mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <span class="text-gold">📚</span> Publicaciones
+            </h2>
+            <a href="{% url 'publications' %}?q={{ query }}" class="text-sm text-gold hover:underline">
+              Ver todas ({{ total_publications }})
+            </a>
+          </div>
+          <div class="space-y-4">
+            {% for pub in publication_results %}
+            <a href="{% url 'publication_detail' pub.slug %}" class="block group">
+              <div class="flex items-start gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-lg transition-all">
+                <div class="flex-shrink-0 w-16 h-16 bg-gold/10 rounded-lg flex items-center justify-center">
+                  {% if pub.imagen_destacada %}
+                    <img src="{{ pub.imagen_destacada.url }}" alt="{{ pub.titulo }}" class="w-full h-full rounded-lg object-cover">
+                  {% else %}
+                    <span class="text-2xl text-gold">📄</span>
+                  {% endif %}
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-gold transition-colors">
+                    {{ pub.titulo|highlight:query }}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {{ pub.resumen|default:pub.contenido|striptags|truncatechars:120|highlight:query }}
+                  </p>
+                  <span class="text-xs text-gray-500 dark:text-gray-500 mt-2 inline-block">
+                    {{ pub.fecha_publicacion|date:"d/m/Y" }}
+                  </span>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Cursos -->
+        {% if course_results %}
+        <div class="mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <span class="text-gold">🎓</span> Cursos
+            </h2>
+            <a href="{% url 'education' %}?q={{ query }}" class="text-sm text-gold hover:underline">
+              Ver todos ({{ total_courses }})
+            </a>
+          </div>
+          <div class="space-y-4">
+            {% for course in course_results %}
+            <a href="{% url 'course_detail' course.slug %}" class="block group">
+              <div class="p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">
+                    {{ course.get_grado_destinatario_display }}
+                  </span>
+                  <span class="text-xs text-gray-500">{{ course.lecciones }} lecciones</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-gold transition-colors">
+                  {{ course.titulo|highlight:query }}
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {{ course.descripcion_corta|truncatechars:100|highlight:query }}
+                </p>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Eventos -->
+        {% if event_results %}
+        <div class="mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <span class="text-gold">📅</span> Eventos
+            </h2>
+            <a href="{% url 'calendar' %}?q={{ query }}" class="text-sm text-gold hover:underline">
+              Ver todos ({{ total_events }})
+            </a>
+          </div>
+          <div class="space-y-4">
+            {% for event in event_results %}
+            <a href="{% url 'event_detail' event.slug %}" class="block group">
+              <div class="flex items-start gap-4 p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-lg transition-all">
+                <div class="flex-shrink-0 w-16 text-center">
+                  <span class="text-2xl font-bold text-gold">{{ event.fecha_inicio|date:"d" }}</span>
+                  <span class="text-xs uppercase text-gray-500 block">{{ event.fecha_inicio|date:"M" }}</span>
+                </div>
+                <div class="flex-1">
+                  <span class="text-xs text-gold">{{ event.get_tipo_display }}</span>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-gold transition-colors">
+                    {{ event.titulo|highlight:query }}
+                  </h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {{ event.descripcion_corta|default:event.descripcion|truncatechars:100|highlight:query }}
+                  </p>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Páginas -->
+        {% if page_results %}
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <span class="text-gold">📄</span> Páginas
+            </h2>
+            <a href="?q={{ query }}" class="text-sm text-gold hover:underline">
+              Ver todas ({{ total_pages }})
+            </a>
+          </div>
+          <div class="space-y-4">
+            {% for page in page_results %}
+            <a href="{% url 'page' page.slug %}" class="block group">
+              <div class="p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-lg transition-all">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-gold transition-colors">
+                  {{ page.titulo|highlight:query }}
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {{ page.contenido_resumido|default:page.contenido|striptags|truncatechars:120|highlight:query }}
+                </p>
+                <span class="text-xs text-gray-500 dark:text-gray-500 mt-2 inline-block">
+                  {{ page.fecha_actualizacion|date:"d/m/Y" }}
+                </span>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+      {% else %}
+        <!-- Sin resultados -->
+        <div class="text-center py-20">
+          <div class="inline-block p-8 bg-gray-100 dark:bg-gray-800 rounded-full mb-6">
+            <span class="text-4xl text-gold/50">⌖</span>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            No se encontraron resultados
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+            No hay coincidencias para "{{ query }}". Prueba con otros términos o revisa tu búsqueda.
+          </p>
+          <div class="mt-8">
+            <span class="text-sm text-gray-500">Sugerencias:</span>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+              <li>• Revisa la ortografía</li>
+              <li>• Usa palabras más generales</li>
+              <li>• Prueba con términos en inglés o español</li>
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- Contenido específico por pestaña -->
+    <div id="publications-content" class="hidden">
+      {% if publication_results %}
+        <div class="space-y-4">
+          {% for pub in publication_results %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-center py-12 text-gray-500">No hay publicaciones que coincidan con tu búsqueda.</p>
+      {% endif %}
+    </div>
+    
+    <div id="courses-content" class="hidden">
+    </div>
+    
+    <div id="events-content" class="hidden">
+    </div>
+    
+    <div id="pages-content" class="hidden">
+    </div>
+    
+  </section>
+  
+{% else %}
+  <!-- Sin búsqueda -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-12">
+      <span class="text-6xl text-gold/30 mb-6 block">⌖</span>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        Ingresa un término de búsqueda
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400">
+        Puedes buscar publicaciones, cursos, eventos, páginas y más contenido masónico.
+      </p>
+      
+      <div class="grid md:grid-cols-3 gap-6 mt-12">
+        <div class="p-4">
+          <span class="text-3xl text-gold mb-3 block">📚</span>
+          <h3 class="font-bold text-gray-900 dark:text-white">Publicaciones</h3>
+          <p class="text-sm text-gray-500">Artículos, reflexiones y planchas</p>
+        </div>
+        <div class="p-4">
+          <span class="text-3xl text-gold mb-3 block">🎓</span>
+          <h3 class="font-bold text-gray-900 dark:text-white">Cursos</h3>
+          <p class="text-sm text-gray-500">Formación por grados</p>
+        </div>
+        <div class="p-4">
+          <span class="text-3xl text-gold mb-3 block">📅</span>
+          <h3 class="font-bold text-gray-900 dark:text-white">Eventos</h3>
+          <p class="text-sm text-gray-500">Tenidas y actividades</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+<script>
+function showTab(tab) {
+  // Ocultar todos los contenidos
+  document.getElementById('all-content').classList.add('hidden');
+  document.getElementById('publications-content').classList.add('hidden');
+  document.getElementById('courses-content').classList.add('hidden');
+  document.getElementById('events-content').classList.add('hidden');
+  document.getElementById('pages-content').classList.add('hidden');
+  
+  // Remover clase active de todos los botones
+  const tabs = ['all', 'publications', 'courses', 'events', 'pages'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`tab-${t}-btn`);
+    if (btn) {
+      btn.classList.remove('tab-active', 'text-gold', 'border-gold');
+      btn.classList.add('text-gray-600', 'dark:text-gray-400', 'border-transparent');
+    }
+  });
+  
+  // Mostrar el tab seleccionado y activar su botón
+  document.getElementById(`${tab}-content`).classList.remove('hidden');
+  const activeBtn = document.getElementById(`tab-${tab}-btn`);
+  if (activeBtn) {
+    activeBtn.classList.add('tab-active', 'text-gold', 'border-gold');
+    activeBtn.classList.remove('text-gray-600', 'dark:text-gray-400', 'border-transparent');
+  }
+}
+
+// Activar primer tab por defecto
+document.addEventListener('DOMContentLoaded', function() {
+  showTab('all');
+});
+</script>
+
+<!-- Template filter highlight -->
+{% load search_extras %}
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.titulo }} | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}{{ page.meta_descripcion|default:page.contenido_resumido|default:page.contenido|striptags|truncatechars:160 }}{% endblock %}
+
+{% block meta_keywords %}{{ page.palabras_clave }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .page-section {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  .page-section h2 {
+    color: {{ configuracion.color_secundario|default:'#FFD700' }};
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  .page-section h3 {
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .page-section blockquote {
+    border-left: 4px solid {{ configuracion.color_secundario|default:'#FFD700' }};
+    padding-left: 1.5rem;
+    font-style: italic;
+    margin: 1.5rem 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero de la página -->
+<section class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-20 w-64 h-64 bg-borgoña/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
+    {% if page.imagen_destacada %}
+    <div class="mb-8">
+      <img src="{{ page.imagen_destacada.url }}" alt="{{ page.titulo }}" class="w-32 h-32 mx-auto rounded-2xl object-cover shadow-2xl">
+    </div>
+    {% else %}
+    <span class="inline-block text-6xl text-gold/30 mb-6">{{ configuracion.logo_tipo|default:'∴' }}</span>
+    {% endif %}
+    
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+      {{ page.titulo }}
+    </h1>
+    
+    {% if page.subtitulo %}
+    <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto">
+      {{ page.subtitulo }}
+    </p>
+    {% endif %}
+    
+    <!-- Metadatos de la página -->
+    <div class="flex justify-center gap-6 mt-8 text-sm text-gray-500 dark:text-gray-500">
+      <span>Última actualización: {{ page.fecha_actualizacion|date:"d/m/Y" }}</span>
+      {% if page.autor %}
+      <span>•</span>
+      <span>Autor: {{ page.autor.get_full_name|default:page.autor.username }}</span>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Contenido principal -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="prose prose-lg dark:prose-invert max-w-none page-section">
+    {{ page.contenido|safe }}
+  </div>
+</section>
+
+<!-- Secciones modulares -->
+{% if sections %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  {% for section in sections %}
+  <div class="mb-16 last:mb-0 {% if section.fondo_oscuro %}bg-gray-50 dark:bg-gray-900/50 rounded-3xl p-8 md:p-12{% endif %} page-section">
+    
+    {% if section.titulo %}
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+      {{ section.titulo }}
+    </h2>
+    {% endif %}
+    
+    {% if section.subtitulo %}
+    <p class="text-xl text-gray-600 dark:text-gray-400 mb-8 text-center max-w-3xl mx-auto">
+      {{ section.subtitulo }}
+    </p>
+    {% endif %}
+    
+    <!-- Contenido según tipo de sección -->
+    {% if section.tipo == 'texto' %}
+    <div class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
+      {{ section.contenido|safe }}
+    </div>
+    
+    {% elif section.tipo == 'texto_imagen' %}
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="prose dark:prose-invert">
+        {{ section.contenido|safe }}
+      </div>
+      <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl h-80 flex items-center justify-center">
+        <span class="text-4xl text-gold/30">🖼️</span>
+      </div>
+    </div>
+    
+    {% elif section.tipo == 'cards' %}
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for i in "123"|make_list %}
+      <div class="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 transition-all">
+        <div class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mb-4">
+          <span class="text-gold text-xl">∴</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Tarjeta {{ forloop.counter }}</h3>
+        <p class="text-gray-600 dark:text-gray-400">Contenido de ejemplo para esta tarjeta.</p>
+      </div>
+      {% endfor %}
+    </div>
+    
+    {% elif section.tipo == 'citas' %}
+    <div class="space-y-6">
+      <blockquote class="text-xl md:text-2xl italic text-gray-700 dark:text-gray-300 border-l-4 border-gold pl-6">
+        {{ section.contenido|default:"Cita inspiradora sobre masonería y fraternidad." }}
+      </blockquote>
+    </div>
+    
+    {% else %}
+    <div class="prose dark:prose-invert">
+      {{ section.contenido|safe }}
+    </div>
+    {% endif %}
+    
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<!-- Compartir en redes sociales -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-gray-200 dark:border-gray-800">
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+    <span class="text-gray-600 dark:text-gray-400">Compartir esta página:</span>
+    <div class="flex gap-4">
+      <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href),'facebook-share','width=580,height=296');return false;" 
+         class="p-2 text-gray-500 hover:text-[#4267B2] transition-colors">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+      </a>
+      <a href="#" onclick="window.open('https://twitter.com/intent/tweet?text={{ page.titulo|urlencode }}&url='+encodeURIComponent(window.location.href),'twitter-share','width=550,height=235');return false;"
+         class="p-2 text-gray-500 hover:text-[#1DA1F2] transition-colors">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.598-7.746.226-.784.318-1.593.368-2.388.452-.802.914-1.568 1-2.59.09-.858-.022-1.713-.422-2.484-.33-.577-.92-.955-1.578-1.09z"/></svg>
+      </a>
+      <a href="mailto:?subject={{ page.titulo }}&body=Te recomiendo esta página: {{ request.build_absolute_uri }}"
+         class="p-2 text-gray-500 hover:text-gold transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Navegación a otras páginas (si existe) -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gold transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Volver
+  </a>
+</section>
+{% endblock %}

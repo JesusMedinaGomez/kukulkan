@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Página no encontrada | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block content %}
+
+<section class="min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto text-center">
+    
+    <!-- Símbolo masónico -->
+    <div class="relative mb-12">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-32 h-32 bg-gold/5 rounded-full blur-3xl"></div>
+      </div>
+      <span class="relative text-8xl md:text-9xl font-bold text-gold/30">⌖</span>
+    </div>
+    
+    <h1 class="text-6xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6">
+      404
+    </h1>
+    
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+      La luz que buscas<br>no se encuentra aquí
+    </h2>
+    
+    <p class="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+      Como en la cámara de reflexión, a veces es necesario encontrar el camino en la oscuridad. 
+      La página que solicitaste no existe o ha sido removida.
+    </p>
+    
+    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+      <a href="{% url 'home' %}" 
+         class="group relative px-8 py-4 bg-gold text-gray-900 rounded-xl font-bold overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105">
+        <span class="relative z-10 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Volver al Oriente
+        </span>
+      </a>
+      
+      <a href="{% url 'contact' %}" 
+         class="group px-8 py-4 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:border-gold hover:text-gold transition-all duration-300 hover:scale-105 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        Contactar V∴M∴
+      </a>
+    </div>
+    
+    <!-- Frase masónica -->
+    <div class="border-t border-gray-200 dark:border-gray-800 pt-12">
+      <p class="text-gray-500 dark:text-gray-500 italic text-lg">
+        "El masón no se detiene ante el error,<br>busca la enseñanza incluso en el tropiezo."
+      </p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

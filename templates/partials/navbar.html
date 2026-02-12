@@ -1,0 +1,240 @@
+{% load static %}
+<nav class="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 transition-all duration-300" aria-label="Navegación principal">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+
+      <!-- Logo-->
+      <a href="{% url 'home' %}" class="flex items-center gap-3 group">
+        <span class="text-2xl lg:text-3xl text-gold transition-transform duration-300 group-hover:scale-110">
+          {{ configuracion.logo_tipo|default:'∴' }}
+        </span>
+        <div class="flex flex-col">
+          <span class="uppercase tracking-[0.2em] text-xs lg:text-sm font-bold text-white">
+            {{ configuracion.nombre_sitio|default:'Logia Kukulkan' }}
+          </span>
+          <span class="text-[10px] lg:text-xs uppercase tracking-[0.3em] text-gray-400">
+            #41 · {{ configuracion.ano_fundacion|default:'1980' }}
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation-->
+      <div class="hidden md:flex items-center space-x-8">
+        {% if nav_items %}
+          {% for item in nav_items %}
+            <a 
+              href="
+                {% if item.tipo_enlace == 'url_named' and item.url_name %}
+                  {% url item.url_name %}
+                {% elif item.tipo_enlace == 'url_externa' and item.url_externa %}
+                  {{ item.url_externa }}
+                {% elif item.tipo_enlace == 'pagina' and item.pagina %}
+                  {% url 'page' item.pagina.slug %}
+                {% else %}
+                  #
+                {% endif %}"
+              class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium transition-colors duration-200
+                     {% if request.resolver_match and request.resolver_match.url_name == item.url_name %}
+                       text-gold
+                     {% else %}
+                       text-gray-300 hover:text-gold
+                     {% endif %}
+                     group"
+              {% if item.subitems.exists %}aria-haspopup="true"{% endif %}>
+              
+              <!-- Icono según el item -->
+              {% if item.titulo == 'Inicio' %}🏠
+              {% elif item.titulo == 'Historia' %}📜
+              {% elif item.titulo == 'Masonería' %}∴
+              {% elif item.titulo == 'Educación' %}📚
+              {% elif item.titulo == 'Blog' or item.titulo == 'Publicaciones' %}📝
+              {% elif item.titulo == 'Directorio' %}👥
+              {% endif %}
+              {{ item.titulo }}
+              
+              {% if request.resolver_match and request.resolver_match.url_name == item.url_name %}
+                <span class="absolute -bottom-[1px] left-0 w-full h-0.5 bg-gold"></span>
+              {% else %}
+                <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+              {% endif %}
+              
+              {% if item.subitems.exists %}
+                <svg class="inline-block w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              {% endif %}
+            </a>
+          {% endfor %}
+        {% else %}
+          <!-- FALLBACK  -->
+          <a href="{% url 'home' %}" class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium text-gray-300 hover:text-gold group">
+            🏠 Inicio
+            <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="{% url 'history' %}" class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium text-gray-300 hover:text-gold group">
+            📜 Historia
+            <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="{% url 'freemasonry' %}" class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium text-gray-300 hover:text-gold group">
+            ∴ Masonería
+            <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="{% url 'education' %}" class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium text-gray-300 hover:text-gold group">
+            📚 Educación
+            <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="{% url 'publications' %}" class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium text-gray-300 hover:text-gold group">
+            📝 Blog
+            <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="{% url 'directory' %}" class="relative py-2 text-sm uppercase tracking-[0.2em] font-medium text-gray-300 hover:text-gold group">
+            👥 Directorio
+            <span class="absolute -bottom-[1px] left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Botón hamburguesa móvil -->
+      <div class="flex items-center md:hidden">
+        <button 
+          id="menu-toggle"
+          class="p-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="mobile-menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path id="menu-icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <div 
+    id="mobile-menu" 
+    class="md:hidden hidden absolute top-full left-0 right-0 
+           bg-gray-900/95 backdrop-blur-sm
+           border-b border-gray-800
+           shadow-lg transition-all duration-300"
+    aria-label="Menú móvil">
+    <div class="px-4 py-4 space-y-2">
+      {% if nav_items %}
+        {% for item in nav_items %}
+          <a 
+            href="
+              {% if item.tipo_enlace == 'url_named' and item.url_name %}
+                {% url item.url_name %}
+              {% elif item.tipo_enlace == 'url_externa' and item.url_externa %}
+                {{ item.url_externa }}
+              {% elif item.tipo_enlace == 'pagina' and item.pagina %}
+                {% url 'page' item.pagina.slug %}
+              {% else %}
+                #
+              {% endif %}"
+            class="block px-4 py-3 rounded-lg transition-all duration-200
+                   {% if request.resolver_match and request.resolver_match.url_name == item.url_name %}
+                     bg-gold/10 text-gold font-medium
+                   {% else %}
+                     text-gray-300 hover:bg-gray-800
+                   {% endif %}
+                   uppercase tracking-[0.2em] text-sm">
+            <!-- Icono según el item -->
+            {% if item.titulo == 'Inicio' %}🏠
+            {% elif item.titulo == 'Historia' %}📜
+            {% elif item.titulo == 'Masonería' %}∴
+            {% elif item.titulo == 'Educación' %}📚
+            {% elif item.titulo == 'Blog' or item.titulo == 'Publicaciones' %}📝
+            {% elif item.titulo == 'Directorio' %}👥
+            {% endif %}
+            {{ item.titulo }}
+          </a>
+          
+          {% if item.subitems.exists %}
+            <div class="pl-6 space-y-1">
+              {% for subitem in item.subitems.all %}
+                <a 
+                  href="
+                    {% if subitem.tipo_enlace == 'url_named' and subitem.url_name %}
+                      {% url subitem.url_name %}
+                    {% elif subitem.tipo_enlace == 'url_externa' and subitem.url_externa %}
+                      {{ subitem.url_externa }}
+                    {% elif subitem.tipo_enlace == 'pagina' and subitem.pagina %}
+                      {% url 'page' subitem.pagina.slug %}
+                    {% else %}
+                      #
+                    {% endif %}"
+                  class="block px-4 py-2 text-sm text-gray-400 hover:text-gold">
+                  {{ subitem.titulo }}
+                </a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <!-- FALLBACK MÓVIL -->
+        <a href="{% url 'home' %}" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 uppercase tracking-[0.2em] text-sm">
+          🏠 Inicio
+        </a>
+        <a href="{% url 'history' %}" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 uppercase tracking-[0.2em] text-sm">
+          📜 Historia
+        </a>
+        <a href="{% url 'freemasonry' %}" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 uppercase tracking-[0.2em] text-sm">
+          ∴ Masonería
+        </a>
+        <a href="{% url 'education' %}" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 uppercase tracking-[0.2em] text-sm">
+          📚 Educación
+        </a>
+        <a href="{% url 'publications' %}" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 uppercase tracking-[0.2em] text-sm">
+          📝 Blog
+        </a>
+        <a href="{% url 'directory' %}" class="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 uppercase tracking-[0.2em] text-sm">
+          👥 Directorio
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<script>
+  (function() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-icon-open');
+    const closeIcon = document.getElementById('menu-icon-close');
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        mobileMenu.classList.toggle('hidden');
+        
+        if (openIcon && closeIcon) {
+          openIcon.classList.toggle('hidden');
+          closeIcon.classList.toggle('hidden');
+        }
+        
+        const expanded = menuToggle.getAttribute('aria-expanded') === 'true' ? 'false' : 'true';
+        menuToggle.setAttribute('aria-expanded', expanded);
+        
+        if (!mobileMenu.classList.contains('hidden')) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
+      });
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+          mobileMenu.classList.add('hidden');
+          if (openIcon && closeIcon) {
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+          }
+          menuToggle.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  })();
+</script>

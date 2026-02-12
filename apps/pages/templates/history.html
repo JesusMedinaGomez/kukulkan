@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Historia | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Historia de la Logia Kukulkan #41 en Mérida, Yucatán. Desde su fundación en {{ configuracion.ano_fundacion|default:'1980' }} hasta la actualidad, conoce el legado de esta respetable logia masónica.{% endblock %}
+
+{% block content %}
+
+<!-- Hero de historia dinámico -->
+<section class="relative bg-gradient-to-br from-borgoña/10 to-gold/10 dark:from-borgoña/20 dark:to-gold/20 overflow-hidden">
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23FFD700" stroke-width="0.5" opacity="0.1"/%3E%3C/svg%3E')] opacity-20"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+    <div class="text-center max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 border border-gold/20 mb-6">
+        <span class="w-2 h-2 bg-gold rounded-full"></span>
+        <span class="text-gold text-sm uppercase tracking-[0.2em] font-medium">
+          Fundada en {{ configuracion.ano_fundacion|default:'1980' }}
+        </span>
+      </div>
+      
+      {% if history_page %}
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
+          {{ history_page.titulo }}
+        </h1>
+        {% if history_page.subtitulo %}
+          <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
+            {{ history_page.subtitulo }}
+          </p>
+        {% endif %}
+      {% else %}
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
+          Nuestra <span class="text-borgoña dark:text-gold">tradición</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed">
+          Desde el primer mallete hasta nuestros días, la Logia Kukulkan #41 ha mantenido 
+          viva la llama de la masonería en la Península de Yucatán.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Contenido de la página de historia si existe -->
+{% if history_page and history_page.contenido %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{ history_page.contenido|safe }}
+  </div>
+</section>
+{% endif %}
+
+<!-- Línea de tiempo interactiva -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-16 text-center">
+    <span class="text-borgoña dark:text-gold">Línea del tiempo</span> histórica
+  </h2>
+
+  <div class="relative">
+    <!-- Línea vertical central -->
+    <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-gold/30 via-gold to-gold/30"></div>
+    
+    <div class="space-y-16">
+      {% for decade, events in events_by_decade.items %}
+        <div class="relative">
+          <!-- Marcador de década -->
+          <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+            <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center text-gray-900 font-bold text-xl shadow-lg border-4 border-white dark:border-gray-900">
+              {{ decade }}
+            </div>
+          </div>
+          
+          <!-- Eventos de la década -->
+          <div class="pt-20 space-y-12">
+            {% for event in events %}
+            <div class="relative group {% if forloop.counter|divisibleby:2 %}md:flex-row-reverse{% endif %} flex flex-col md:flex-row items-center gap-8 md:gap-16">
+              
+              <!-- Contenido del evento -->
+              <div class="md:w-1/2 {% if forloop.counter|divisibleby:2 %}md:text-left{% else %}md:text-right{% endif %}">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-lg group-hover:border-gold/50 transition-all duration-500 group-hover:-translate-y-2">
+                  <div class="flex items-center gap-3 mb-3 {% if forloop.counter|divisibleby:2 %}md:flex-row{% else %}md:flex-row-reverse{% endif %}">
+                    <span class="text-2xl font-bold text-gold">{{ event.fecha|date:"Y" }}</span>
+                    {% if event.categoria %}
+                      <span class="px-3 py-1 bg-borgoña/10 dark:bg-gold/10 text-borgoña dark:text-gold text-xs rounded-full">
+                        {{ event.get_categoria_display }}
+                      </span>
+                    {% endif %}
+                  </div>
+                  <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{{ event.titulo }}</h3>
+                  <p class="text-gray-600 dark:text-gray-400 mb-4">{{ event.descripcion }}</p>
+                  
+                  {% if event.protagonistas.exists %}
+                  <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <span class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-500">Protagonistas</span>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                      {% for protagonista in event.protagonistas.all|slice:":3" %}
+                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                          {{ protagonista.nombre_masonico|default:protagonista.nombre_completo }}
+                        </span>
+                        {% if not forloop.last %}<span class="text-gray-400">•</span>{% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  {% if event.imagen or event.video_url %}
+                  <div class="mt-4 flex gap-3">
+                    {% if event.imagen %}
+                      <a href="{{ event.imagen.url }}" target="_blank" class="text-xs text-gold hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Ver imagen
+                      </a>
+                    {% endif %}
+                    {% if event.video_url %}
+                      <a href="{{ event.video_url }}" target="_blank" class="text-xs text-gold hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Ver video
+                      </a>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="relative flex items-center justify-center z-10">
+                <div class="w-4 h-4 bg-gold rounded-full ring-4 ring-gold/20 group-hover:ring-gold/40 transition-all duration-300"></div>
+              </div>
+              
+              <div class="md:w-1/2"></div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <!-- Mensaje si no hay eventos -->
+        <div class="text-center py-20">
+          <div class="inline-block p-8 bg-gray-50 dark:bg-gray-800 rounded-full mb-6">
+            <span class="text-4xl text-gold/50">⌖</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Construyendo nuestra historia</h3>
+          <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+            Próximamente estaremos digitalizando nuestro archivo histórico para compartirlo con todos ustedes.
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Galería de imágenes históricas -->
+{% if featured_images %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50 dark:bg-gray-900/50 rounded-4xl my-20">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Memoria ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">Galería histórica</h2>
+    <p class="text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+      Imágenes que preservan la memoria de nuestra logia a través de los años.
+    </p>
+  </div>
+  
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for image in featured_images %}
+    <div class="group relative aspect-square overflow-hidden rounded-xl cursor-pointer"
+         onclick="openModal('{{ image.imagen.url }}', '{{ image.titulo }}', '{{ image.descripcion|escapejs }}')">
+      <img src="{{ image.imagen.url }}" 
+           alt="{{ image.titulo }}" 
+           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+        <h3 class="text-sm font-bold truncate">{{ image.titulo }}</h3>
+        {% if image.fecha %}
+          <p class="text-xs text-gray-200">{{ image.fecha|date:"Y" }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Documentos históricos públicos -->
+{% if public_documents %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-8 lg:p-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+          <span class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center">
+            <span class="text-gold text-xl">📜</span>
+          </span>
+          Archivo documental
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">Documentos históricos de acceso público.</p>
+      </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for doc in public_documents %}
+      <a href="{{ doc.archivo.url }}" target="_blank" 
+         class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gold/5 transition-colors group">
+        <span class="text-2xl text-gold/70 group-hover:text-gold transition-colors">
+          {% if doc.tipo == 'acta' %}📄
+          {% elif doc.tipo == 'ritual' %}🔮
+          {% elif doc.tipo == 'plancha' %}✍️
+          {% elif doc.tipo == 'fotografia' %}🖼️
+          {% else %}📁
+          {% endif %}
+        </span>
+        <div class="flex-1 min-w-0">
+          <h4 class="font-medium text-gray-900 dark:text-white truncate group-hover:text-gold transition-colors">
+            {{ doc.titulo }}
+          </h4>
+          {% if doc.descripcion %}
+            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1 truncate">{{ doc.descripcion }}</p>
+          {% endif %}
+          {% if doc.fecha %}
+            <p class="text-xs text-gray-400 dark:text-gray-600 mt-1">{{ doc.fecha|date:"Y" }}</p>
+          {% endif %}
+        </div>
+        <svg class="w-5 h-5 text-gray-400 group-hover:text-gold transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Modal para imágenes -->
+<div id="imageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4" onclick="closeModal()">
+  <div class="relative max-w-5xl max-h-[90vh]" onclick="event.stopPropagation()">
+    <button onclick="closeModal()" class="absolute -top-12 right-0 text-white hover:text-gold transition-colors">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <img id="modalImage" src="" alt="" class="max-w-full max-h-[80vh] object-contain rounded-lg">
+    <div id="modalCaption" class="mt-4 text-center text-white"></div>
+  </div>
+</div>
+
+<script>
+function openModal(imageUrl, title, description) {
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const modalCaption = document.getElementById('modalCaption');
+  
+  modalImage.src = imageUrl;
+  modalCaption.innerHTML = `<h3 class="text-xl font-bold text-gold">${title}</h3><p class="text-gray-300 mt-2">${description}</p>`;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('imageModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  document.body.style.overflow = '';
+}
+</script>
+{% endblock %}

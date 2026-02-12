@@ -1,0 +1,571 @@
+{% extends "base.html" %}
+
+{% block title %}Educación y Recursos | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Plataforma educativa masónica. Accede a cursos, materiales de estudio, biblioteca simbólica y recursos para el desarrollo personal y filosófico en la Logia Kukulkan #41.{% endblock %}
+
+{% block content %}
+
+<!-- Hero educativo -->
+<section class="relative bg-gradient-to-br from-borgoña/10 to-gold/10 dark:from-borgoña/20 dark:to-gold/20 overflow-hidden">
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23FFD700" stroke-width="0.5" opacity="0.1"/%3E%3C/svg%3E')] opacity-20"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+    <div class="max-w-4xl">
+      <span class="inline-block px-4 py-2 rounded-full bg-gold/20 border border-gold/30 text-gold text-sm uppercase tracking-[0.2em] font-medium mb-6">
+        ∴ Academia Masónica ∴
+      </span>
+      
+      {% if education_page %}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          {{ education_page.titulo }}
+        </h1>
+        {% if education_page.subtitulo %}
+          <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed">
+            {{ education_page.subtitulo }}
+          </p>
+        {% endif %}
+      {% else %}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          Taller de <span class="text-gold">conocimiento</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed">
+          La educación es la columna vertebral del progreso masónico. Ofrecemos recursos formativos 
+          para todos los grados, desde Aprendiz hasta Maestro.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Contenido de la página de educación  -->
+{% if education_page and education_page.contenido %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{ education_page.contenido|safe }}
+  </div>
+</section>
+{% endif %}
+
+<!-- Plataforma Moodle destacada -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-white dark:bg-gray-900 rounded-3xl border-2 border-gold/20 p-8 lg:p-10 hover:border-gold/40 transition-all duration-300">
+      <div class="flex flex-col md:flex-row items-start gap-8">
+        <div class="w-20 h-20 bg-gold/10 rounded-2xl flex items-center justify-center flex-shrink-0">
+          <svg class="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+            Plataforma {{ configuracion.nombre_sitio|default:'Moodle Kukulkan' }}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-lg mb-6">
+            Accede a nuestro campus virtual con cursos estructurados por grados, evaluaciones, 
+            biblioteca digital y foros de discusión filosófica. Disponible 24/7 para todos los miembros.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <!-- URL DINÁMICA DESDE EL ADMIN -->
+            <a href="{{ moodle_url }}" target="_blank" 
+               class="inline-flex items-center gap-3 bg-gold text-gray-900 px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 group">
+              <span>{{ moodle_button_text }}</span>
+              <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+            <a href="{{ moodle_url }}" target="_blank" 
+               class="inline-flex items-center gap-2 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-xl font-bold hover:border-gold hover:text-gold transition-all duration-300">
+              Ver tutorial
+            </a>
+          </div>
+          {% if configuracion.url_moodle_login %}
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-4">
+            ¿Ya tienes cuenta? <a href="{{ moodle_login_url }}" target="_blank" class="text-gold hover:underline">Inicia sesión aquí</a>
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTADÍSTICAS DINÁMICAS DE EDUCACIÓN - TODOS LOS DEFAULTS EN 0 -->
+    <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-8">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 bg-borgoña/10 rounded-xl flex items-center justify-center">
+          <span class="text-borgoña dark:text-gold text-2xl font-serif">I</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Estadísticas</h3>
+      </div>
+      
+      <div class="space-y-4">
+        <!-- Hermanos inscritos -->
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+            <span class="text-gold">∴</span>
+            HH:. inscritos
+          </span>
+          <span class="text-2xl font-bold text-gold">
+            {% if estadisticas_educacion %}
+              {% for stat in estadisticas_educacion %}
+                {% if stat.titulo == 'Miembros activos' or stat.categoria == 'miembros' and forloop.first %}
+                  {{ stat.get_valor_calculado|default:'0' }}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {{ total_miembros|default:'0' }}
+            {% endif %}
+          </span>
+        </div>
+
+        <!-- Cursos activos -->
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+            <span class="text-gold">📚</span>
+            Cursos activos
+          </span>
+          <span class="text-2xl font-bold text-gold">
+            {% if estadisticas_educacion %}
+              {% for stat in estadisticas_educacion %}
+                {% if stat.tipo_automatico == 'total_cursos' %}
+                  {{ stat.get_valor_calculado|default:'0' }}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {{ cursos_activos_count|default:'0' }}
+            {% endif %}
+          </span>
+        </div>
+
+        <!-- Materiales educativos -->
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+            <span class="text-gold">📄</span>
+            Materiales
+          </span>
+          <span class="text-2xl font-bold text-gold">
+            {% if total_materiales %}
+              {{ total_materiales }}
+            {% elif estadisticas_educacion %}
+              {% for stat in estadisticas_educacion %}
+                {% if stat.titulo == 'Materiales educativos' %}
+                  {{ stat.get_valor_calculado|default:'0' }}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              0
+            {% endif %}
+          </span>
+        </div>
+
+        <!-- Biblioteca -->
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+            <span class="text-gold">📖</span>
+            Biblioteca
+          </span>
+          <span class="text-2xl font-bold text-gold">
+            {% if total_biblioteca %}
+              {{ total_biblioteca }}
+            {% elif estadisticas_educacion %}
+              {% for stat in estadisticas_educacion %}
+                {% if stat.titulo == 'Recursos biblioteca' %}
+                  {{ stat.get_valor_calculado|default:'0' }}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              0
+            {% endif %}
+          </span>
+        </div>
+
+        <!-- Horas de formación -->
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+            <span class="text-gold">⏳</span>
+            Horas de formación
+          </span>
+          <span class="text-2xl font-bold text-gold">
+            {% if total_horas_formacion %}
+              {{ total_horas_formacion }}
+            {% else %}
+              0
+            {% endif %}
+          </span>
+        </div>
+
+        <!-- Instructores -->
+        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+            <span class="text-gold">🎓</span>
+            Instructores
+          </span>
+          <span class="text-2xl font-bold text-gold">
+            {% if total_instructores %}
+              {{ total_instructores }}
+            {% else %}
+              0
+            {% endif %}
+          </span>
+        </div>
+      </div>
+
+      <!-- Nota adicional dinámica -->
+      <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-xs text-gray-500 dark:text-gray-500 text-center italic">
+          Última actualización: {% now "d/m/Y" %}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cursos por grado -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-16">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Formación ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4 mb-6">
+      Cursos por grado masónico
+    </h2>
+    <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-400 text-lg">
+      Programas diseñados específicamente para cada etapa del camino masónico.
+    </p>
+  </div>
+
+  <!-- Estadísticas rápidas de cursos - TODOS EN 0 POR DEFAULT -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+      <span class="text-2xl text-gold block mb-1">∴</span>
+      <span class="text-xl font-bold text-gray-900 dark:text-white">{{ apprentice_courses|length|default:'0' }}</span>
+      <p class="text-xs text-gray-600 dark:text-gray-400">Cursos Aprendiz</p>
+    </div>
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+      <span class="text-2xl text-gold block mb-1">⌖</span>
+      <span class="text-xl font-bold text-gray-900 dark:text-white">{{ fellow_courses|length|default:'0' }}</span>
+      <p class="text-xs text-gray-600 dark:text-gray-400">Cursos Compañero</p>
+    </div>
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+      <span class="text-2xl text-gold block mb-1">◈</span>
+      <span class="text-xl font-bold text-gray-900 dark:text-white">{{ master_courses|length|default:'0' }}</span>
+      <p class="text-xs text-gray-600 dark:text-gray-400">Cursos Maestro</p>
+    </div>
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+      <span class="text-2xl text-gold block mb-1">⚜️</span>
+      <span class="text-xl font-bold text-gray-900 dark:text-white">{{ all_levels_courses|length|default:'0' }}</span>
+      <p class="text-xs text-gray-600 dark:text-gray-400">Cursos transversales</p>
+    </div>
+  </div>
+
+  <!-- Aprendiz -->
+  {% if apprentice_courses %}
+  <div class="mb-16">
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+        <span class="text-gold text-2xl">∴</span>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Grado de Aprendiz</h3>
+        <p class="text-gray-600 dark:text-gray-400">Los fundamentos del simbolismo y la moral masónica</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for course in apprentice_courses %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+        {% if course.imagen_portada %}
+        <img src="{{ course.imagen_portada.url }}" alt="{{ course.titulo }}" class="w-full h-48 object-cover">
+        {% else %}
+        <div class="w-full h-48 bg-gradient-to-br from-gold/5 to-borgoña/5 flex items-center justify-center">
+          <span class="text-4xl text-gold/30">∴</span>
+        </div>
+        {% endif %}
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-3">
+            <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ course.titulo }}</h4>
+            <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">{{ course.lecciones|default:'0' }} lecciones</span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{{ course.descripcion_corta }}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-500 dark:text-gray-500">
+              {% if course.instructor %}
+                Instructor: {{ course.instructor.nombre_masonico|default:course.instructor.nombre_completo }}
+              {% endif %}
+            </span>
+            <a href="{% url 'course_detail' course.slug %}" class="text-borgoña dark:text-gold hover:underline text-sm font-medium flex items-center gap-1">
+              Ver curso
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Compañero -->
+  {% if fellow_courses %}
+  <div class="mb-16">
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+        <span class="text-gold text-2xl">⌖</span>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Grado de Compañero</h3>
+        <p class="text-gray-600 dark:text-gray-400">Las artes liberales y el camino del conocimiento</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for course in fellow_courses %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+        {% if course.imagen_portada %}
+        <img src="{{ course.imagen_portada.url }}" alt="{{ course.titulo }}" class="w-full h-48 object-cover">
+        {% else %}
+        <div class="w-full h-48 bg-gradient-to-br from-gold/5 to-borgoña/5 flex items-center justify-center">
+          <span class="text-4xl text-gold/30">⌖</span>
+        </div>
+        {% endif %}
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-3">
+            <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ course.titulo }}</h4>
+            <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">{{ course.lecciones|default:'0' }} lecciones</span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{{ course.descripcion_corta }}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-500 dark:text-gray-500">{{ course.duracion_horas|default:'0' }} horas</span>
+            <a href="{% url 'course_detail' course.slug %}" class="text-borgoña dark:text-gold hover:underline text-sm font-medium flex items-center gap-1">
+              Ver curso
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Maestro -->
+  {% if master_courses %}
+  <div class="mb-16">
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+        <span class="text-gold text-2xl">◈</span>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Grado de Maestro</h3>
+        <p class="text-gray-600 dark:text-gray-400">Filosofía profunda y liderazgo masónico</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for course in master_courses %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+        {% if course.imagen_portada %}
+        <img src="{{ course.imagen_portada.url }}" alt="{{ course.titulo }}" class="w-full h-48 object-cover">
+        {% else %}
+        <div class="w-full h-48 bg-gradient-to-br from-gold/5 to-borgoña/5 flex items-center justify-center">
+          <span class="text-4xl text-gold/30">◈</span>
+        </div>
+        {% endif %}
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-3">
+            <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ course.titulo }}</h4>
+            <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">{{ course.lecciones|default:'0' }} lecciones</span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{{ course.descripcion_corta }}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-500 dark:text-gray-500">Avanzado</span>
+            <a href="{% url 'course_detail' course.slug %}" class="text-borgoña dark:text-gold hover:underline text-sm font-medium flex items-center gap-1">
+              Ver curso
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Todos los niveles -->
+  {% if all_levels_courses %}
+  <div>
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+        <span class="text-gold text-2xl">⚜️</span>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Cursos transversales</h3>
+        <p class="text-gray-600 dark:text-gray-400">Abiertos a todos los grados</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for course in all_levels_courses %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+        <div class="p-6">
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{{ course.titulo }}</h4>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{{ course.descripcion_corta }}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-500 dark:text-gray-500">{{ course.lecciones|default:'0' }} lecciones</span>
+            <a href="{% url 'course_detail' course.slug %}" class="text-borgoña dark:text-gold hover:underline text-sm font-medium flex items-center gap-1">
+              Más info
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<!-- Materiales educativos recientes -->
+{% if recent_materials %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-8 lg:p-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+          <span class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center">
+            <span class="text-gold text-xl">📚</span>
+          </span>
+          Materiales recientes
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400">Recursos educativos recién añadidos</p>
+      </div>
+      <a href="#" class="inline-flex items-center gap-2 text-gold hover:text-gold/80 font-medium">
+        Ver todos ({{ total_materiales|default:recent_materials|length|default:'0' }})
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+    </div>
+    
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for material in recent_materials %}
+      <div class="group relative">
+        <a href="{% if material.archivo %}{{ material.archivo.url }}{% else %}{{ material.url_externa }}{% endif %}" 
+           target="_blank"
+           class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gold/5 transition-all duration-300 hover:scale-[1.02]">
+          <span class="text-2xl text-gold/70 group-hover:text-gold transition-colors">
+            {% if material.tipo == 'documento' %}📄
+            {% elif material.tipo == 'video' %}🎥
+            {% elif material.tipo == 'presentacion' %}📊
+            {% elif material.tipo == 'audio' %}🎧
+            {% elif material.tipo == 'enlace' %}🔗
+            {% elif material.tipo == 'libro' %}📖
+            {% else %}📁
+            {% endif %}
+          </span>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-medium text-gray-900 dark:text-white truncate group-hover:text-gold transition-colors">
+              {{ material.titulo }}
+            </h4>
+            {% if material.curso %}
+              <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{{ material.curso.titulo|truncatechars:40 }}</p>
+            {% endif %}
+            <span class="text-xs text-gray-400 dark:text-gray-600 mt-1 inline-block">
+              {{ material.get_tipo_display }}
+            </span>
+          </div>
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-gold transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Biblioteca digital -->
+{% if featured_library %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Biblioteca ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">Biblioteca simbólica</h2>
+    <p class="text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+      Textos fundamentales, rituales y obras de consulta para el estudio masónico.
+    </p>
+  </div>
+  
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for book in featured_library %}
+    <div class="group bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-lg transition-all duration-300">
+      <div class="aspect-[3/4] bg-gradient-to-br from-gold/5 to-borgoña/5 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+        {% if book.portada %}
+          <img src="{{ book.portada.url }}" alt="{{ book.titulo }}" class="w-full h-full object-cover">
+        {% else %}
+          <span class="text-4xl text-gold/30">📚</span>
+        {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+          <span class="text-white text-xs font-medium">{{ book.get_categoria_display }}</span>
+        </div>
+      </div>
+      <h4 class="font-bold text-gray-900 dark:text-white mb-1 line-clamp-2">{{ book.titulo }}</h4>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{{ book.autor }}</p>
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-gray-500 dark:text-gray-500">{{ book.año_publicacion|default:'—' }}</span>
+        <a href="{% if book.archivo_pdf %}{{ book.archivo_pdf.url }}{% else %}{{ book.url_externa }}{% endif %}" 
+           target="_blank"
+           class="text-gold hover:text-gold/80 text-xs font-medium flex items-center gap-1">
+          Leer
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <div class="text-center mt-12">
+    <a href="#" class="inline-flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-gold dark:hover:text-gold transition-colors">
+      Explorar biblioteca completa
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      </svg>
+    </a>
+  </div>
+</section>
+{% endif %}
+
+<!-- Llamado a la acción -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+  <div class="bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 rounded-3xl p-12 text-center border border-gold/20">
+    <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      ¿Eres miembro de la logia?
+    </h3>
+    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+      Accede a nuestra plataforma {{ configuracion.nombre_sitio|default:'Moodle' }} con tus credenciales y continúa tu formación masónica.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="{{ moodle_login_url }}" target="_blank"
+         class="inline-flex items-center justify-center gap-2 bg-gold text-gray-900 px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300">
+        Iniciar sesión
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+      </a>
+      <a href="{{ moodle_url }}" target="_blank"
+         class="inline-flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-xl font-bold hover:border-gold hover:text-gold transition-all duration-300">
+        {{ moodle_button_text }}
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 dark:text-gray-500 mt-6">
+      ¿No tienes cuenta? <a href="{% url 'directory' %}?asunto=acceso_moodle" class="text-gold hover:underline">Solicita tu acceso</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

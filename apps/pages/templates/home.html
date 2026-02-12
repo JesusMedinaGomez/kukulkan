@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Logia Masónica Kukulkan #41 en Peto, Yucatán. Un espacio de reflexión, fraternidad y desarrollo personal basado en principios masónicos tradicionales con visión contemporánea.{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section con carrusel dinámico -->
+<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+  <!-- Fondo dinámico con imágenes del carrusel o default -->
+  <div class="absolute inset-0 z-0">
+    {% if carousel %}
+      {% with first_slide=carousel.first %}
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ first_slide.imagen.url }}');">
+          <div class="absolute inset-0 bg-gradient-to-br from-borgoña/80 via-borgoña/60 to-transparent dark:from-borgoña/90 dark:via-borgoña/70"></div>
+        </div>
+      {% endwith %}
+    {% else %}
+      <div class="absolute inset-0 bg-gradient-to-br from-borgoña/5 via-transparent to-gold/5 dark:from-borgoña/10 dark:to-gold/10"></div>
+      <div class="absolute top-20 left-10 w-72 h-72 bg-gold/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-borgoña/5 rounded-full blur-3xl"></div>
+    {% endif %}
+    
+    <!-- Símbolos masónicos decorativos -->
+    <div class="absolute top-1/4 left-1/4 text-9xl text-gold/5 dark:text-gold/10 animate-pulse">{{ configuracion.logo_tipo|default:'∴' }}</div>
+    <div class="absolute bottom-1/4 right-1/4 text-9xl text-borgoña/5 dark:text-borgoña/10 animate-pulse">⌖</div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 dark:bg-gold/5 border border-gold/20 mb-8 animate-fade-in">
+      <span class="w-2 h-2 bg-gold rounded-full animate-pulse"></span>
+      <span class="text-gold text-sm uppercase tracking-[0.2em] font-medium">∴ Al Oriente de Mérida ∴</span>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
+      <span class="block text-borgoña dark:text-gold">{{ configuracion.nombre_sitio|default:'Logia Kukulkan' }}</span>
+      <span class="block text-3xl md:text-4xl lg:text-5xl font-light tracking-[0.3em] mt-4 text-gray-700 dark:text-gray-300">#41</span>
+    </h1>
+
+    <p class="max-w-3xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
+      "{{ configuracion.lema_principal|default:'Un taller de construcción interior, donde la tradición masónica se encuentra con el pensamiento contemporáneo' }}"
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+      <a href="{% url 'history' %}" 
+         class="group relative px-8 py-4 bg-borgoña dark:bg-gold text-white dark:text-gray-900 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105">
+        <span class="relative z-10 flex items-center gap-2">
+          Conocer la Logia
+          <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </span>
+      </a>
+      <a href="{% url 'directory' %}" 
+        class="group px-8 py-4 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:border-gold dark:hover:border-gold hover:text-gold dark:hover:text-gold transition-all duration-300 hover:scale-105">
+        Contactar Venerable Maestro
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Carrusel completo-->
+{% if carousel|length > 1 %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    {% for slide in carousel %}
+      {% if not forloop.first %}
+      <div class="relative group overflow-hidden rounded-xl aspect-video">
+        <img src="{{ slide.imagen.url }}" alt="{{ slide.titulo }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <h3 class="text-sm font-bold">{{ slide.titulo }}</h3>
+          {% if slide.subtitulo %}
+            <p class="text-xs text-gray-200">{{ slide.subtitulo|truncatechars:50 }}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Sección de estadísticas dinámicas con ENLACES -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {% if estadisticas_destacadas %}
+      {% for stat in estadisticas_destacadas %}
+        <!-- Determinar URL según el título -->
+        {% if stat.titulo == 'Miembros activos' %}
+          <a href="{% url 'directory' %}" class="block group">
+        {% elif stat.titulo == 'Cursos activos' or stat.titulo == 'Educación' %}
+          <a href="{% url 'education' %}" class="block group">
+        {% elif stat.titulo == 'Eventos próximos' or stat.titulo == 'Calendario' %}
+          <a href="{% url 'calendar' %}" class="block group">
+        {% elif stat.titulo == 'Años de la Logia' or stat.titulo == 'Historia' %}
+          <a href="{% url 'history' %}" class="block group">
+        {% else %}
+          <div class="block group">
+        {% endif %}
+        
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center hover:border-gold/50 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <span class="text-4xl text-gold mb-3 block group-hover:scale-110 transition-transform duration-300">
+            {{ stat.icono }}
+          </span>
+          <span class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white block">
+            {{ stat.get_valor_calculado }}
+          </span>
+          <h3 class="text-sm uppercase tracking-[0.2em] text-gray-600 dark:text-gray-400 mt-2">
+            {{ stat.titulo }}
+          </h3>
+          {% if stat.subtitulo %}
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{{ stat.subtitulo }}</p>
+          {% endif %}
+        </div>
+        
+        {% if stat.titulo == 'Miembros activos' or stat.titulo == 'Cursos activos' or stat.titulo == 'Educación' or stat.titulo == 'Eventos próximos' or stat.titulo == 'Calendario' or stat.titulo == 'Años de la Logia' or stat.titulo == 'Historia' %}
+          </a>
+        {% else %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <!-- Estadísticas por defecto con ENLACES -->
+      <a href="{% url 'directory' %}" class="block group">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center hover:border-gold/50 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <span class="text-4xl text-gold mb-3 block group-hover:scale-110 transition-transform duration-300">∴</span>
+          <span class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white block">{{ total_miembros|default:'0' }}</span>
+          <h3 class="text-sm uppercase tracking-[0.2em] text-gray-600 dark:text-gray-400 mt-2">Directorio</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Miembros activos</p>
+        </div>
+      </a>
+      
+      <a href="{% url 'education' %}" class="block group">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center hover:border-gold/50 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <span class="text-4xl text-gold mb-3 block group-hover:scale-110 transition-transform duration-300">⌖</span>
+          <span class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white block">{{ cursos_activos_count|default:'0' }}</span>
+          <h3 class="text-sm uppercase tracking-[0.2em] text-gray-600 dark:text-gray-400 mt-2">Educación</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Cursos activos</p>
+        </div>
+      </a>
+      
+      <a href="{% url 'calendar' %}" class="block group">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center hover:border-gold/50 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <span class="text-4xl text-gold mb-3 block group-hover:scale-110 transition-transform duration-300">📅</span>
+          <span class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white block">{{ total_eventos_proximos|default:'0' }}</span>
+          <h3 class="text-sm uppercase tracking-[0.2em] text-gray-600 dark:text-gray-400 mt-2">Calendario</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Eventos próximos</p>
+        </div>
+      </a>
+      
+      <a href="{% url 'history' %}" class="block group">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 text-center hover:border-gold/50 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <span class="text-4xl text-gold mb-3 block group-hover:scale-110 transition-transform duration-300">📚</span>
+          <span class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white block">{{ antiguedad_logia|default:'0' }}</span>
+          <h3 class="text-sm uppercase tracking-[0.2em] text-gray-600 dark:text-gray-400 mt-2">Historia</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Años de la Logia</p>
+        </div>
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Sección de principios destacados -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="text-center mb-16">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">Nuestros pilares</span>
+    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mt-4 mb-6">
+      Trabajamos sobre la piedra<br>bruta del ser humano
+    </h2>
+    <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-400 text-lg">
+      La masonería nos ofrece herramientas simbólicas para pulir nuestro carácter y contribuir al progreso de la humanidad.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    {% for principio in featured_principles %}
+    <div class="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-gold/30 dark:hover:border-gold/30 transition-all duration-500 hover:-translate-y-2">
+      <div class="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"></div>
+      <div class="relative">
+        <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+          <span class="text-3xl text-gold">{{ principio.simbolo|default:'∴' }}</span>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ principio.titulo }}</h3>
+        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+          {{ principio.descripcion_corta }}
+        </p>
+        {% if principio.frase %}
+        <p class="mt-4 text-sm text-gold italic">"{{ principio.frase }}"</p>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <!-- Fallback si no hay principios -->
+    <div class="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800">
+      <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center mb-6">
+        <span class="text-3xl text-gold">∴</span>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Fraternidad</h3>
+      <p class="text-gray-600 dark:text-gray-400">Promovemos relaciones sinceras y de apoyo mutuo entre nuestros miembros.</p>
+    </div>
+    <div class="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800">
+      <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center mb-6">
+        <span class="text-3xl text-gold">⌖</span>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Conocimiento</h3>
+      <p class="text-gray-600 dark:text-gray-400">Valoramos la educación continua y el entendimiento profundo de símbolos y enseñanzas.</p>
+    </div>
+    <div class="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800">
+      <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center mb-6">
+        <span class="text-3xl text-gold">◈</span>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Integridad</h3>
+      <p class="text-gray-600 dark:text-gray-400">Actuamos con ética, honestidad y coherencia en todas nuestras acciones.</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Últimas publicaciones -->
+{% if latest_publications %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50 dark:bg-gray-900/50 rounded-4xl">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Blog ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">Últimas publicaciones</h2>
+  </div>
+  
+  <div class="grid md:grid-cols-3 gap-8">
+    {% for pub in latest_publications %}
+    <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      {% if pub.imagen_destacada %}
+      <img src="{{ pub.imagen_destacada.url }}" alt="{{ pub.titulo }}" class="w-full h-48 object-cover">
+      {% else %}
+      <div class="w-full h-48 bg-gradient-to-br from-borgoña/20 to-gold/20 flex items-center justify-center">
+        <span class="text-4xl text-gold/50">{{ configuracion.logo_tipo|default:'∴' }}</span>
+      </div>
+      {% endif %}
+      <div class="p-6">
+        <div class="flex items-center gap-2 mb-3">
+          {% for cat in pub.categorias.all|slice:":2" %}
+          <span class="text-xs px-2 py-1 bg-gold/10 text-gold rounded-full">{{ cat.nombre }}</span>
+          {% endfor %}
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ pub.titulo }}</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{{ pub.resumen|default:pub.contenido|truncatechars:100 }}</p>
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-gray-500 dark:text-gray-500">{{ pub.fecha_publicacion|date:"d/m/Y" }}</span>
+          <a href="{% url 'publication_detail' pub.slug %}" class="text-borgoña dark:text-gold text-sm font-medium hover:underline">Leer más →</a>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mt-12">
+    <a href="{% url 'publications' %}" class="inline-flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-gold dark:hover:text-gold transition-colors">
+      Ver todas las publicaciones
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      </svg>
+    </a>
+  </div>
+</section>
+{% endif %}
+  <br>
+<!-- Próximos eventos -->
+{% if upcoming_events %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Calendario ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">Próximos eventos</h2>
+  </div>
+  
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for event in upcoming_events|slice:":4" %}
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 transition-all duration-300">
+      <div class="flex items-start justify-between mb-4">
+        <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">{{ event.get_tipo_display }}</span>
+        <span class="text-xs text-gray-500 dark:text-gray-500">{{ event.fecha_inicio|date:"d M" }}</span>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ event.titulo }}</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ event.descripcion_corta|default:event.descripcion|truncatechars:60 }}</p>
+      <div class="flex items-center text-xs text-gray-500 dark:text-gray-500 mb-4">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        {{ event.lugar }}
+      </div>
+      <a href="{% url 'event_detail' event.slug %}" class="inline-flex items-center text-borgoña dark:text-gold text-sm font-medium hover:underline">
+        Más información
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Llamado a la acción con Moodle  -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+  <div class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 rounded-4xl p-12 md:p-16 overflow-hidden border border-gold/20">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-borgoña/10 rounded-full blur-3xl"></div>
+    
+    <div class="relative z-10 text-center max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+        ¿Listo para comenzar tu trabajo interior?
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">
+        La {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }} abre sus puertas a todo hombre libre y de buenas costumbres que busque la luz del conocimiento.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{% url 'directory' %}" 
+           class="inline-flex items-center gap-2 bg-gold text-gray-900 px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          Solicitar información
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="{{ moodle_url }}" target="_blank"
+           class="inline-flex items-center gap-2 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-xl font-bold hover:border-gold hover:text-gold transition-all duration-300">
+          {{ moodle_button_text }}
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+      </div>
+      {% if configuracion.url_moodle_login %}
+      <p class="text-xs text-gray-500 dark:text-gray-500 mt-6">
+        ¿Ya eres miembro? <a href="{{ moodle_login_url }}" target="_blank" class="text-gold hover:underline">Inicia sesión en Moodle</a>
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

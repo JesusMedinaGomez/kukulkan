@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.titulo }} | Eventos - {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}{{ event.descripcion_corta|default:event.descripcion|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+
+<!-- Hero del evento -->
+<section class="relative bg-gradient-to-br from-borgoña/10 to-gold/10 dark:from-borgoña/20 dark:to-gold/20 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 right-20 w-64 h-64 bg-gold/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-64 h-64 bg-borgoña/10 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="flex flex-col lg:flex-row gap-12 items-start">
+      
+      <!-- Información principal -->
+      <div class="lg:w-2/3">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="px-4 py-2 bg-gold/10 text-gold text-sm rounded-full font-medium">
+            {{ event.get_tipo_display }}
+          </span>
+          {% if event.destacado %}
+          <span class="px-4 py-2 bg-borgoña/10 text-borgoña dark:text-gold text-sm rounded-full font-medium">
+            ★ Destacado
+          </span>
+          {% endif %}
+          {% if event.es_publico %}
+          <span class="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm rounded-full font-medium">
+            Abierto
+          </span>
+          {% endif %}
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          {{ event.titulo }}
+        </h1>
+        
+        <div class="flex flex-wrap gap-6 mb-8">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-500">Fecha y hora</p>
+              <p class="font-semibold text-gray-900 dark:text-white">
+                {{ event.fecha_inicio|date:"l d F Y" }}<br>
+                {{ event.fecha_inicio|date:"H:i" }} hrs
+              </p>
+              {% if event.fecha_fin %}
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                hasta {{ event.fecha_fin|date:"d/m/Y H:i" }} hrs
+              </p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-500">Lugar</p>
+              <p class="font-semibold text-gray-900 dark:text-white">{{ event.lugar }}</p>
+              {% if event.direccion %}
+              <p class="text-sm text-gray-600 dark:text-gray-400">{{ event.direccion }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        {% if event.descripcion_corta %}
+        <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+          {{ event.descripcion_corta }}
+        </p>
+        {% endif %}
+      </div>
+      
+      <!-- Card de asistencia -->
+      <div class="lg:w-1/3 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gold/20 p-8 shadow-xl">
+        <div class="text-center mb-6">
+          <span class="text-4xl text-gold mb-4 block">⌖</span>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Confirmar asistencia
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            {% if event.cupo_maximo > 0 %}
+              Cupo: {{ total_attendees }} / {{ event.cupo_maximo }}
+            {% else %}
+              {{ total_attendees }} hermanos confirmados
+            {% endif %}
+          </p>
+        </div>
+        
+        {% if user.is_authenticated and user.miembro %}
+          {% if user_attending %}
+            <form action="{% url 'confirm_attendance' event.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit"
+                      class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 mb-4">
+                Cancelar asistencia
+              </button>
+            </form>
+            <span class="block text-center text-green-600 dark:text-green-400 text-sm">
+              ✓ Has confirmado asistencia
+            </span>
+          {% else %}
+            <form action="{% url 'confirm_attendance' event.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit"
+                      class="w-full bg-gold hover:bg-gold/90 text-gray-900 font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl mb-4"
+                      {% if event.cupo_maximo > 0 and total_attendees >= event.cupo_maximo %}disabled{% endif %}>
+                {% if event.cupo_maximo > 0 and total_attendees >= event.cupo_maximo %}
+                  Cupo lleno
+                {% else %}
+                  Confirmar asistencia
+                {% endif %}
+              </button>
+            </form>
+          {% endif %}
+        {% else %}
+          <a href="{% url 'login' %}?next={{ request.path }}" 
+             class="inline-block w-full bg-gold hover:bg-gold/90 text-gray-900 font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl mb-4">
+            Iniciar sesión
+          </a>
+          <p class="text-xs text-center text-gray-500 dark:text-gray-500">
+            Solo miembros de la logia pueden confirmar asistencia
+          </p>
+        {% endif %}
+        
+        <!-- Organizador -->
+        {% if event.organizador %}
+        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gold/10 rounded-full flex items-center justify-center">
+              <span class="text-gold font-bold">{{ event.organizador.nombre_masonico|first|default:'O' }}</span>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-500">Organizado por</p>
+              <p class="font-medium text-gray-900 dark:text-white">
+                {{ event.organizador.nombre_masonico|default:event.organizador.nombre_completo }}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Descripción  -->
+{% if event.descripcion %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">⌖</span>
+    </span>
+    Sobre el evento
+  </h2>
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{ event.descripcion|linebreaks }}
+  </div>
+</section>
+{% endif %}
+
+<!-- Imagen del evento -->
+{% if event.imagen %}
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="rounded-2xl overflow-hidden shadow-2xl">
+    <img src="{{ event.imagen.url }}" alt="{{ event.titulo }}" class="w-full h-auto">
+  </div>
+</section>
+{% endif %}
+
+<!-- Mapa -->
+{% if event.direccion %}
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">⌖</span>
+    </span>
+    Cómo llegar
+  </h2>
+  <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-8 text-center">
+    <span class="text-4xl text-gold/30 mb-4 block">⌖</span>
+    <p class="text-gray-700 dark:text-gray-300 mb-2">{{ event.direccion }}</p>
+    <p class="text-sm text-gray-500 dark:text-gray-500">
+      Mapa interactivo próximamente
+    </p>
+  </div>
+</section>
+{% endif %}
+
+<!-- Eventos relacionados -->
+{% if related_events %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50 dark:bg-gray-900/50 rounded-4xl">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ También te puede interesar ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">
+      Eventos relacionados
+    </h2>
+  </div>
+  
+  <div class="grid md:grid-cols-3 gap-6">
+    {% for related in related_events %}
+    <a href="{% url 'event_detail' related.slug %}" 
+       class="group bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-lg transition-all duration-300">
+      <div class="flex items-start gap-3 mb-4">
+        <div class="flex-shrink-0 w-12 h-12 bg-gold/10 rounded-lg flex flex-col items-center justify-center">
+          <span class="text-lg font-bold text-gold">{{ related.fecha_inicio|date:"d" }}</span>
+          <span class="text-xs uppercase text-gray-600 dark:text-gray-400">{{ related.fecha_inicio|date:"M" }}</span>
+        </div>
+        <div>
+          <span class="text-xs text-gold">{{ related.get_tipo_display }}</span>
+          <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-gold transition-colors line-clamp-2">
+            {{ related.titulo }}
+          </h3>
+        </div>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+        {{ related.descripcion_corta|default:related.descripcion|truncatechars:60 }}
+      </p>
+      <span class="text-gold text-sm group-hover:gap-2 transition-all inline-flex items-center gap-1">
+        Ver detalles
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Volver al calendario -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <a href="{% url 'calendar' %}" class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gold transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Volver al calendario
+  </a>
+</section>
+
+<!-- Mensajes de éxito/error -->
+{% if messages %}
+<div class="fixed bottom-8 right-8 z-50 space-y-2">
+  {% for message in messages %}
+  <div class="animate-slide-up bg-white dark:bg-gray-800 border-l-4 
+              {% if message.tags == 'success' %}border-gold{% else %}border-borgoña{% endif %}
+              rounded-lg shadow-2xl p-4 max-w-md">
+    <div class="flex items-center gap-3">
+      {% if message.tags == 'success' %}
+        <span class="text-2xl text-gold">∴</span>
+      {% else %}
+        <span class="text-2xl text-borgoña">⌖</span>
+      {% endif %}
+      <p class="text-gray-700 dark:text-gray-300">{{ message }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<script>
+  setTimeout(() => {
+    document.querySelectorAll('.fixed.bottom-8 > div').forEach(el => el.remove());
+  }, 5000);
+</script>
+{% endif %}
+
+{% endblock %}

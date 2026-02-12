@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.titulo }} | Historia - {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}{{ event.descripcion_corta|default:event.descripcion|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+
+<!-- Hero del evento histórico -->
+<section class="relative bg-gradient-to-br from-borgoña/10 to-gold/10 dark:from-borgoña/20 dark:to-gold/20 overflow-hidden">
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23FFD700" stroke-width="0.5" opacity="0.1"/%3E%3C/svg%3E')] opacity-20"></div>
+  
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="flex flex-col md:flex-row gap-8 items-start">
+      
+      <!-- Año destacado -->
+      <div class="flex-shrink-0">
+        <div class="w-24 h-24 md:w-32 md:h-32 bg-gold rounded-2xl flex flex-col items-center justify-center shadow-2xl">
+          <span class="text-3xl md:text-4xl font-bold text-gray-900">{{ event.fecha|date:"Y" }}</span>
+          <span class="text-sm uppercase tracking-wider text-gray-800">{{ event.fecha|date:"M" }}</span>
+        </div>
+        {% if event.fecha_texto %}
+        <p class="text-center text-sm text-gold mt-2">{{ event.fecha_texto }}</p>
+        {% endif %}
+      </div>
+      
+      <!-- Información -->
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="px-4 py-2 bg-gold/10 text-gold text-sm rounded-full font-medium">
+            {{ event.get_categoria_display }}
+          </span>
+          {% if event.es_hito %}
+          <span class="px-4 py-2 bg-borgoña/10 text-borgoña dark:text-gold text-sm rounded-full font-medium">
+            ★ Hito histórico
+          </span>
+          {% endif %}
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          {{ event.titulo }}
+        </h1>
+        
+        {% if event.descripcion_corta %}
+        <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+          {{ event.descripcion_corta }}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Descripción completa -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{ event.descripcion|linebreaks }}
+  </div>
+</section>
+
+<!-- Imagen destacada -->
+{% if event.imagen %}
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-gold/20">
+    <img src="{{ event.imagen.url }}" alt="{{ event.titulo }}" class="w-full h-auto">
+    {% if event.imagen_descripcion %}
+    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+      <p class="text-white text-sm">{{ event.imagen_descripcion }}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Video -->
+{% if event.video_url %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">🎥</span>
+    </span>
+    Material audiovisual
+  </h2>
+  <div class="aspect-video bg-gray-900 rounded-2xl overflow-hidden">
+    <iframe src="{{ event.video_url }}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+  </div>
+</section>
+{% endif %}
+
+<!-- Protagonistas -->
+{% if protagonists %}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50 dark:bg-gray-900/50 rounded-4xl">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Protagonistas ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">
+      Hermanos que hicieron historia
+    </h2>
+  </div>
+  
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for protagonista in protagonists %}
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 bg-gradient-to-br from-gold/20 to-borgoña/20 rounded-full flex items-center justify-center flex-shrink-0">
+          {% if protagonista.foto %}
+            <img src="{{ protagonista.foto.url }}" alt="{{ protagonista.nombre_completo }}" class="w-full h-full rounded-full object-cover">
+          {% else %}
+            <span class="text-2xl font-bold text-gold">
+              {{ protagonista.nombre_masonico|first|default:protagonista.nombre_completo|first }}
+            </span>
+          {% endif %}
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900 dark:text-white">
+            {{ protagonista.nombre_masonico|default:protagonista.nombre_completo }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{{ protagonista.grado_actual.nombre }}</p>
+          {% if protagonista.es_publico %}
+          <a href="{% url 'member_detail' protagonista.id %}" class="text-xs text-gold hover:underline mt-1 inline-block">
+            Ver perfil →
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Galería de imágenes -->
+{% if images %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">📸</span>
+    </span>
+    Galería histórica
+  </h2>
+  
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {% for image in images %}
+    <div class="group relative aspect-square overflow-hidden rounded-xl cursor-pointer"
+         onclick="openModal('{{ image.imagen.url }}', '{{ image.titulo }}', '{{ image.descripcion|escapejs }}')">
+      <img src="{{ image.imagen.url }}" 
+           alt="{{ image.titulo }}" 
+           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+        <h3 class="text-sm font-bold truncate">{{ image.titulo }}</h3>
+        {% if image.descripcion %}
+        <p class="text-xs text-gray-200 truncate">{{ image.descripcion }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Documentos relacionados -->
+{% if documents %}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">📜</span>
+    </span>
+    Documentos históricos
+  </h2>
+  
+  <div class="space-y-3">
+    {% for doc in documents %}
+    <div class="group flex items-center justify-between p-4 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <span class="text-2xl text-gold/70 group-hover:text-gold transition-colors">
+          {% if doc.tipo == 'acta' %}📄
+          {% elif doc.tipo == 'ritual' %}🔮
+          {% elif doc.tipo == 'plancha' %}✍️
+          {% elif doc.tipo == 'fotografia' %}🖼️
+          {% elif doc.tipo == 'correspondencia' %}✉️
+          {% else %}📁
+          {% endif %}
+        </span>
+        <div>
+          <h4 class="font-medium text-gray-900 dark:text-white group-hover:text-gold transition-colors">
+            {{ doc.titulo }}
+          </h4>
+          {% if doc.descripcion %}
+          <p class="text-xs text-gray-500 dark:text-gray-500">{{ doc.descripcion }}</p>
+          {% endif %}
+          {% if doc.fecha %}
+          <span class="text-xs text-gray-400 dark:text-gray-600">{{ doc.fecha|date:"Y" }}</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      {% if user.is_authenticated or not doc.solo_miembros %}
+        <a href="{{ doc.archivo.url }}" target="_blank" 
+           class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm font-medium hover:bg-gold/20 hover:text-gold transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          Descargar
+        </a>
+      {% else %}
+        <span class="text-sm text-gray-500">Requiere autenticación</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Navegación entre eventos -->
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-gray-200 dark:border-gray-800">
+  <div class="flex flex-col sm:flex-row justify-between gap-6">
+    {% if prev_event %}
+    <a href="{% url 'historical_event' prev_event.id %}" 
+       class="group flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gold/10 transition-colors">
+      <svg class="w-5 h-5 text-gold transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <div class="text-left">
+        <span class="text-xs text-gray-500 dark:text-gray-500">Anterior</span>
+        <p class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gold transition-colors line-clamp-1">
+          {{ prev_event.titulo }}
+        </p>
+      </div>
+    </a>
+    {% endif %}
+    
+    <a href="{% url 'history' %}" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gold transition-colors sm:mx-auto">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+      Línea de tiempo
+    </a>
+    
+    {% if next_event %}
+    <a href="{% url 'historical_event' next_event.id %}" 
+       class="group flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gold/10 transition-colors sm:flex-row-reverse">
+      <svg class="w-5 h-5 text-gold transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+      </svg>
+      <div class="text-right">
+        <span class="text-xs text-gray-500 dark:text-gray-500">Siguiente</span>
+        <p class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gold transition-colors line-clamp-1">
+          {{ next_event.titulo }}
+        </p>
+      </div>
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Modal imágenes -->
+<div id="imageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4" onclick="closeModal()">
+  <div class="relative max-w-5xl max-h-[90vh]" onclick="event.stopPropagation()">
+    <button onclick="closeModal()" class="absolute -top-12 right-0 text-white hover:text-gold transition-colors">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <img id="modalImage" src="" alt="" class="max-w-full max-h-[80vh] object-contain rounded-lg">
+    <div id="modalCaption" class="mt-4 text-center text-white"></div>
+  </div>
+</div>
+
+<script>
+function openModal(imageUrl, title, description) {
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const modalCaption = document.getElementById('modalCaption');
+  
+  modalImage.src = imageUrl;
+  modalCaption.innerHTML = `<h3 class="text-xl font-bold text-gold">${title}</h3><p class="text-gray-300 mt-2">${description}</p>`;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('imageModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  document.body.style.overflow = '';
+}
+</script>
+{% endblock %}

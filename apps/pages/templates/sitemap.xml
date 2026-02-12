@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Home -->
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}</loc>
+    <lastmod>{% now "Y-m-d" %}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Páginas principales -->
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'history' %}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'principles' %}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'freemasonry' %}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'education' %}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'contact' %}</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'directory' %}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'calendar' %}</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Páginas dinámicas -->
+  {% for page in pages %}
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'page' page.slug %}</loc>
+    <lastmod>{{ page.fecha_actualizacion|date:"Y-m-d" }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  {% endfor %}
+  
+  <!-- Publicaciones -->
+  {% for pub in publications %}
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'publication_detail' pub.slug %}</loc>
+    <lastmod>{{ pub.fecha_actualizacion|date:"Y-m-d" }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  {% endfor %}
+  
+  <!-- Eventos -->
+  {% for event in events %}
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'event_detail' event.slug %}</loc>
+    <lastmod>{{ event.fecha_inicio|date:"Y-m-d" }}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  {% endfor %}
+  
+  <!-- Cursos -->
+  {% for course in courses %}
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'course_detail' course.slug %}</loc>
+    <lastmod>{{ course.fecha_inicio|date:"Y-m-d"|default:now }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  {% endfor %}
+  
+  <!-- Eventos históricos -->
+  {% for event in historical_events %}
+  <url>
+    <loc>{{ request.scheme }}://{{ request.get_host }}{% url 'historical_event' event.id %}</loc>
+    <lastmod>{{ event.fecha|date:"Y-m-d" }}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  {% endfor %}
+  
+</urlset>
+{% endblock %}

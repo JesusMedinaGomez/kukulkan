@@ -1,0 +1,22 @@
+<!-- templates/admin/dashboard.html -->
+{% extends "admin/index.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Panel de Control Masónico</h2>
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 40px; color: #7b1e3a;">∴</span>
+                <div>
+                    <h3 style="margin: 0; color: #7b1e3a;">Logia Kukulkan #41</h3>
+                    <p style="margin: 5px 0 0; color: #666;">Bienvenido, Venerable Maestro</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ block.super }}
+</div>
+{% endblock %}

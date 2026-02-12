@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}{{ publication.titulo }} | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}{{ publication.resumen|default:publication.contenido|striptags|truncatechars:160 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .prose h2, .prose h3, .prose h4 {
+    color: inherit;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .prose h2 { font-size: 2rem; margin-top: 2rem; margin-bottom: 1rem; }
+  .prose h3 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+  .prose p { line-height: 1.8; margin-bottom: 1.25rem; }
+  .prose ul, .prose ol { margin-bottom: 1.25rem; }
+  .prose blockquote {
+    border-left: 4px solid {{ configuracion.color_secundario|default:'#FFD700' }};
+    padding-left: 1.5rem;
+    font-style: italic;
+    margin: 1.5rem 0;
+    color: rgba(255,255,255,0.9);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero de la publicación -->
+<section class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-20 w-64 h-64 bg-borgoña/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <!-- Categorías -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      {% for cat in publication.categorias.all %}
+      <a href="{% url 'publications' %}?category={{ cat.slug }}" 
+         class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full hover:bg-gold/20 transition-colors">
+        {{ cat.nombre }}
+      </a>
+      {% endfor %}
+    </div>
+    
+    <!-- Título -->
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+      {{ publication.titulo }}
+    </h1>
+    
+    {% if publication.subtitulo %}
+    <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 italic">
+      {{ publication.subtitulo }}
+    </p>
+    {% endif %}
+    
+    <!-- Metadatos -->
+    <div class="flex flex-wrap items-center gap-6 text-sm">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-gold/10 rounded-full flex items-center justify-center">
+          <span class="text-gold font-bold">
+            {{ publication.autor.username|first|upper|default:'L' }}
+          </span>
+        </div>
+        <div>
+          <span class="block text-gray-900 dark:text-white font-medium">
+            {{ publication.autor.get_full_name|default:publication.autor.username|default:'Logia Kukulkan' }}
+          </span>
+          <span class="text-xs text-gray-500 dark:text-gray-500">
+            {{ publication.fecha_publicacion|date:"d F Y" }} · {{ publication.visitas }} lecturas
+          </span>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2 ml-auto">
+        <button onclick="window.print()" class="p-2 text-gray-500 hover:text-gold transition-colors" title="Imprimir">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+          </svg>
+        </button>
+        <a href="#" onclick="sharePost()" class="p-2 text-gray-500 hover:text-gold transition-colors" title="Compartir">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Imagen destacada -->
+{% if publication.imagen_destacada %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 mb-12">
+  <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+    <img src="{{ publication.imagen_destacada.url }}" 
+         alt="{{ publication.titulo }}" 
+         class="w-full h-auto max-h-[500px] object-cover">
+    {% if publication.imagen_destacada.caption %}
+    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+      <p class="text-white text-sm">{{ publication.imagen_destacada.caption }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Contenido principal -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{ publication.contenido|safe }}
+  </div>
+</section>
+
+<!-- Etiquetas -->
+{% if publication.etiquetas %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-gray-200 dark:border-gray-800">
+  <div class="flex flex-wrap items-center gap-3">
+    <span class="text-sm text-gray-500 dark:text-gray-500">Etiquetas:</span>
+    {% for tag in publication.etiquetas.split %}
+    <a href="{% url 'publications' %}?q={{ tag }}" 
+       class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs rounded-full hover:bg-gold/20 hover:text-gold transition-colors">
+      #{{ tag }}
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Publicaciones relacionadas -->
+{% if related_publications %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Relacionados ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">
+      Artículos que pueden interesarte
+    </h2>
+  </div>
+  
+  <div class="grid md:grid-cols-3 gap-8">
+    {% for related in related_publications %}
+    <article class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:border-gold/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <a href="{% url 'publication_detail' related.slug %}" class="block">
+        {% if related.imagen_destacada %}
+        <img src="{{ related.imagen_destacada.url }}" alt="{{ related.titulo }}" class="w-full h-48 object-cover">
+        {% else %}
+        <div class="w-full h-48 bg-gradient-to-br from-gold/5 to-borgoña/5 flex items-center justify-center">
+          <span class="text-4xl text-gold/30">{{ configuracion.logo_tipo|default:'∴' }}</span>
+        </div>
+        {% endif %}
+        <div class="p-6">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gold transition-colors line-clamp-2">
+            {{ related.titulo }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+            {{ related.resumen|default:related.contenido|striptags|truncatechars:80 }}
+          </p>
+          <span class="text-gold text-sm font-medium">Leer más →</span>
+        </div>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Navegación entre publicaciones -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-gray-200 dark:border-gray-800">
+  <div class="flex flex-col sm:flex-row justify-between gap-6">
+    {% if prev_publication %}
+    <a href="{% url 'publication_detail' prev_publication.slug %}" 
+       class="group flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gold/10 transition-colors">
+      <svg class="w-5 h-5 text-gold transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <div class="text-left">
+        <span class="text-xs text-gray-500 dark:text-gray-500">Anterior</span>
+        <p class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gold transition-colors line-clamp-1">
+          {{ prev_publication.titulo }}
+        </p>
+      </div>
+    </a>
+    {% endif %}
+    
+    {% if next_publication %}
+    <a href="{% url 'publication_detail' next_publication.slug %}" 
+       class="group flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gold/10 transition-colors sm:ml-auto">
+      <div class="text-right">
+        <span class="text-xs text-gray-500 dark:text-gray-500">Siguiente</span>
+        <p class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gold transition-colors line-clamp-1">
+          {{ next_publication.titulo }}
+        </p>
+      </div>
+      <svg class="w-5 h-5 text-gold transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+      </svg>
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+function sharePost() {
+  if (navigator.share) {
+    navigator.share({
+      title: '{{ publication.titulo|escapejs }}',
+      text: '{{ publication.resumen|default:publication.contenido|striptags|truncatechars:100|escapejs }}',
+      url: window.location.href,
+    })
+    .catch(console.error);
+  } else {
+    // Fallback: copiar al portapapeles
+    navigator.clipboard.writeText(window.location.href);
+    alert('Enlace copiado al portapapeles');
+  }
+}
+</script>
+{% endblock %}

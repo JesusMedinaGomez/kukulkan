@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Calendario de Eventos | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Calendario de eventos, tenidas y actividades de la Logia Kukulkan #41 en Mérida, Yucatán. Consulta nuestras próximas reuniones y ceremonias.{% endblock %}
+
+{% block extra_css %}
+<style>
+  .event-tag {
+    transition: all 0.2s ease;
+  }
+  .event-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px {{ configuracion.color_secundario|default:'#FFD700' }}40;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background-color: #e5e7eb;
+  }
+  .dark .calendar-grid {
+    background-color: #1f2937;
+  }
+  .calendar-cell {
+    background-color: white;
+    padding: 1rem;
+    min-height: 120px;
+  }
+  .dark .calendar-cell {
+    background-color: #111827;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero del calendario -->
+<section class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 py-24 md:py-32 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-20 w-64 h-64 bg-borgoña/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <span class="inline-block px-4 py-2 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm uppercase tracking-[0.2em] font-medium mb-6">
+      ∴ Agenda ∴
+    </span>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+      Calendario de <span class="text-borgoña dark:text-gold">eventos</span>
+    </h1>
+    <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto">
+      Tenidas regulares, ceremonias de grado, conferencias y actividades fraternales.
+    </p>
+  </div>
+</section>
+
+<!-- Tenida regular destacada -->
+{% if tenida_info %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="bg-gradient-to-r from-borgoña/10 to-gold/10 dark:from-borgoña/20 dark:to-gold/20 rounded-2xl p-6 md:p-8 border border-gold/30">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 bg-gold/20 rounded-2xl flex items-center justify-center">
+          <span class="text-3xl text-gold">⌖</span>
+        </div>
+        <div>
+          <span class="text-gold text-sm uppercase tracking-wider font-bold">Tenida regular</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            {{ tenida_info.get_dia_semana_display }}s · {{ tenida_info.hora|time:"H:i" }} hrs
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400">
+            {{ tenida_info.lugar }} · {{ tenida_info.direccion|truncatechars:50 }}
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <span class="px-4 py-2 bg-white dark:bg-gray-900 rounded-full text-sm font-medium border border-gold/30">
+          {{ tenida_info.get_grado_display }}
+        </span>
+        <a href="{% url 'contact' %}" class="px-6 py-2 bg-gold text-gray-900 rounded-full text-sm font-bold hover:shadow-lg transition-all">
+          Confirmar asistencia
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Calendario interactivo -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+    
+    <!-- Cabecera del calendario -->
+    <div class="p-6 border-b border-gray-200 dark:border-gray-800">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-4">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ fecha_actual|date:"F Y" }}
+          </h3>
+          <div class="flex gap-2">
+            <button class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gold transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <button class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gold transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-2 text-sm">
+            <span class="w-3 h-3 bg-gold rounded-full"></span> Eventos
+          </span>
+          <span class="flex items-center gap-2 text-sm">
+            <span class="w-3 h-3 bg-borgoña rounded-full"></span> Tenidas
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Días de la semana -->
+    <div class="grid grid-cols-7 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      {% for dia in dias_semana %}
+      <div class="py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+        {{ dia }}
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Grid de días  -->
+    <div class="calendar-grid">
+      {% for dia in rango_dias %}
+      <div class="calendar-cell p-3">
+        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ dia }}</span>
+        {% if dia == 15 %}
+        <div class="mt-2">
+          <div class="event-tag p-2 bg-gold/10 rounded-lg border-l-2 border-gold cursor-pointer hover:bg-gold/20">
+            <p class="text-xs font-bold text-gray-900 dark:text-white">Tenida regular</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">19:30 hrs</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Próximos eventos -->
+{% if upcoming_events %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Próximamente ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">
+      Eventos programados
+    </h2>
+    <p class="text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+      No te pierdas nuestras próximas actividades y ceremonias.
+    </p>
+  </div>
+  
+  <div class="space-y-4">
+    {% for event in upcoming_events %}
+    <div class="group bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-lg transition-all duration-300">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-start gap-4">
+          <!-- Fecha -->
+          <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-gold/10 to-borgoña/10 rounded-xl flex flex-col items-center justify-center">
+            <span class="text-2xl font-bold text-gold">{{ event.fecha_inicio|date:"d" }}</span>
+            <span class="text-xs uppercase text-gray-600 dark:text-gray-400">{{ event.fecha_inicio|date:"M" }}</span>
+          </div>
+          
+          <!-- Info -->
+          <div>
+            <div class="flex flex-wrap items-center gap-3 mb-2">
+              <span class="px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">{{ event.get_tipo_display }}</span>
+              {% if event.tipo == 'tenida_regular' %}
+              <span class="px-3 py-1 bg-borgoña/10 text-borgoña dark:text-gold text-xs rounded-full">Tenida</span>
+              {% endif %}
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gold transition-colors">
+              <a href="{% url 'event_detail' event.slug %}">{{ event.titulo }}</a>
+            </h3>
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ event.fecha_inicio|date:"H:i" }} hrs
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                {{ event.lugar }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3 md:ml-auto">
+          <span class="text-sm text-gray-500 dark:text-gray-500">
+            {{ event.asistentes.count }} asistentes
+          </span>
+          <a href="{% url 'event_detail' event.slug %}" 
+             class="px-6 py-2 bg-gold/10 hover:bg-gold/20 text-gold rounded-lg text-sm font-medium transition-colors">
+            Ver detalles
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Eventos por mes -->
+{% if events_by_month %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50 dark:bg-gray-900/50 rounded-4xl">
+  <div class="text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+      Eventos del año
+    </h2>
+    <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      Todos nuestros eventos programados para el año {{ fecha_actual|date:"Y" }}
+    </p>
+  </div>
+  
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for month, month_events in events_by_month.items %}
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+        {{ month_events.0.fecha_inicio|date:"F Y" }}
+      </h3>
+      <div class="space-y-3">
+        {% for event in month_events|slice:":3" %}
+        <a href="{% url 'event_detail' event.slug %}" class="block p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <span class="text-xs text-gold">{{ event.fecha_inicio|date:"d/m" }}</span>
+          <h4 class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ event.titulo }}</h4>
+          <span class="text-xs text-gray-500 dark:text-gray-500">{{ event.lugar|truncatechars:30 }}</span>
+        </a>
+        {% endfor %}
+        {% if month_events|length > 3 %}
+        <p class="text-xs text-center text-gray-500 dark:text-gray-500 pt-2">
+          + {{ month_events|length|add:"-3" }} eventos más
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- API JSON para calendario -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/events/')
+      .then(response => response.json())
+      .then(events => {
+        console.log('Eventos cargados:', events);
+        // Aquí puedes poblar un calendario dinámico
+      });
+  });
+</script>
+{% endblock %}

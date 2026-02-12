@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Perfil personal de {{ member.nombre_masonico|default:member.nombre_completo }} en la Logia Kukulkan #41.{% endblock %}
+
+{% block content %}
+
+<!-- Hero del perfil -->
+<section class="relative bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 py-16 md:py-24 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 right-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-64 h-64 bg-borgoña/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      
+      <!-- Foto con overlay de edición -->
+      <div class="flex-shrink-0 group relative">
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-gold/30 to-borgoña/30 flex items-center justify-center border-4 border-gold shadow-2xl overflow-hidden">
+          {% if member.foto %}
+            <img src="{{ member.foto.url }}" alt="{{ member.nombre_completo }}" class="w-full h-full object-cover">
+          {% else %}
+            <span class="text-5xl md:text-6xl font-bold text-gold">
+              {{ member.nombre_masonico|first|default:member.nombre_completo|first }}
+            </span>
+          {% endif %}
+        </div>
+        <button class="absolute -bottom-2 -right-2 w-10 h-10 bg-gold rounded-full flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:scale-110">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Información básica -->
+      <div class="flex-1 text-center md:text-left">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-2">
+          {{ member.nombre_masonico|default:member.nombre_completo }}
+        </h1>
+        {% if member.nombre_masonico %}
+        <p class="text-xl text-gray-600 dark:text-gray-400 mb-4">
+          {{ member.nombre_completo }}
+        </p>
+        {% endif %}
+        
+        <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
+          <span class="px-4 py-2 bg-gold/10 text-gold rounded-full text-sm font-medium border border-gold/20">
+            {{ member.grado_actual.nombre }} · {{ member.grado_actual.numero }}°
+          </span>
+          <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+            Miembro desde {{ member.fecha_ingreso|date:"Y" }}
+          </span>
+        </div>
+        
+        <div class="flex justify-center md:justify-start gap-4">
+          <span class="text-sm text-gray-500 flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Iniciación: {{ member.fecha_iniciacion|date:"d/m/Y" }}
+          </span>
+          {% if member.fecha_ascenso %}
+          <span class="text-sm text-gray-500 flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+            Ascenso: {{ member.fecha_ascenso|date:"d/m/Y" }}
+          </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Formulario de edición de perfil -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-8 md:p-12">
+    
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+        <span class="text-gold text-2xl">∴</span>
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+        Editar información personal
+      </h2>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+      
+      <!-- Dos columnas -->
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <!-- Columna izquierda -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Nombre masónico
+            </label>
+            <input type="text" name="nombre_masonico" value="{{ member.nombre_masonico|default:'' }}" 
+                   class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-200"
+                   placeholder="Ej. Hiram Abif">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Nombre completo
+            </label>
+            <input type="text" name="nombre_completo" value="{{ member.nombre_completo }}" required
+                   class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-200">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Correo electrónico
+            </label>
+            <input type="email" name="email" value="{{ member.email|default:'' }}" 
+                   class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-200">
+          </div>
+        </div>
+        
+        <!-- Columna derecha -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Teléfono
+            </label>
+            <input type="tel" name="telefono" value="{{ member.telefono|default:'' }}" 
+                   class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-200"
+                   placeholder="999 123 4567">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Dirección
+            </label>
+            <textarea name="direccion" rows="3" 
+                      class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-200"
+                      placeholder="Calle, número, colonia, ciudad...">{{ member.direccion|default:'' }}</textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Foto de perfil -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Foto de perfil
+        </label>
+        <div class="flex items-center gap-6">
+          <div class="w-20 h-20 bg-gradient-to-br from-gold/20 to-borgoña/20 rounded-full flex items-center justify-center overflow-hidden">
+            {% if member.foto %}
+              <img src="{{ member.foto.url }}" alt="" class="w-full h-full object-cover">
+            {% else %}
+              <span class="text-2xl text-gold">{{ member.nombre_masonico|first|default:member.nombre_completo|first }}</span>
+            {% endif %}
+          </div>
+          <div class="flex-1">
+            <input type="file" name="foto" accept="image/*" 
+                   class="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold/10 file:text-gold hover:file:bg-gold/20 transition-all">
+            <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">
+              Formatos: JPG, PNG. Tamaño máximo: 2MB.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Visibilidad -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+        <label class="flex items-center gap-3">
+          <input type="checkbox" name="es_publico" {% if member.es_publico %}checked{% endif %} 
+                 class="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold">
+          <span class="text-gray-700 dark:text-gray-300">
+            Mostrar mi perfil en el directorio público
+          </span>
+        </label>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-2 ml-8">
+          Si activas esta opción, otros hermanos podrán ver tu perfil y contactarte.
+        </p>
+      </div>
+      
+      <!-- Botones -->
+      <div class="flex flex-col sm:flex-row gap-4 pt-6">
+        <button type="submit" 
+                class="flex-1 bg-gold hover:bg-gold/90 text-gray-900 font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Guardar cambios
+        </button>
+        <a href="{% url 'members_area' %}" 
+           class="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold py-4 px-6 rounded-xl transition-all duration-300 text-center">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Información sensible -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900 rounded-3xl p-8">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center flex-shrink-0">
+        <span class="text-yellow-600 dark:text-yellow-400 text-xl">⚠️</span>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+          Información de la Secretaría
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+          Para cambios en tu grado, cargo o fecha de iniciación, contacta directamente a la Secretaría de la Logia.
+        </p>
+        <a href="{% url 'contact' %}" class="text-gold hover:underline text-sm font-medium inline-flex items-center gap-1">
+          Contactar Secretaría
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Firma digital -->
+{% if member.firma %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-gray-200 dark:border-gray-800">
+  <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Mi firma</h3>
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+    <img src="{{ member.firma.url }}" alt="Firma de {{ member.nombre_completo }}" class="max-h-20">
+    <p class="text-xs text-gray-500 dark:text-gray-500 mt-4">
+      Esta firma es utilizada en documentos oficiales de la logia.
+    </p>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

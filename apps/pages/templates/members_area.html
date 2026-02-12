@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}Área de Miembros | {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Área privada para miembros de la Logia Kukulkan #41. Accede a documentos exclusivos, cursos, eventos y gestión de perfil.{% endblock %}
+
+{% block content %}
+
+<!-- Hero del área de miembros -->
+<section class="relative bg-gradient-to-br from-borgoña/10 to-gold/10 dark:from-borgoña/20 dark:to-gold/20 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-20 w-64 h-64 bg-gold/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-20 w-64 h-64 bg-borgoña/10 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
+      
+      <!-- Avatar del miembro -->
+      <div class="flex-shrink-0">
+        <div class="relative">
+          <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-gold/30 to-borgoña/30 flex items-center justify-center border-4 border-gold shadow-2xl">
+            {% if member.foto %}
+              <img src="{{ member.foto.url }}" alt="{{ member.nombre_completo }}" class="w-full h-full rounded-full object-cover">
+            {% else %}
+              <span class="text-5xl md:text-6xl font-bold text-gold">
+                {{ member.nombre_masonico|first|default:member.nombre_completo|first }}
+              </span>
+            {% endif %}
+          </div>
+          <div class="absolute -bottom-2 -right-2 px-4 py-2 bg-gold text-gray-900 rounded-full text-sm font-bold shadow-lg">
+            {{ member.grado_actual.nombre }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bienvenida -->
+      <div class="flex-1 text-center md:text-left">
+        <span class="inline-block px-4 py-2 rounded-full bg-gold/20 border border-gold/30 text-gold text-sm uppercase tracking-[0.2em] font-medium mb-4">
+          ∴ Bienvenido, Hermano ∴
+        </span>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          {{ member.nombre_masonico|default:member.nombre_completo }}
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400 mb-6">
+          {{ member.grado_actual.nombre }} · {{ member.antiguedad_anios }} años en la Orden
+        </p>
+        
+        <div class="flex flex-wrap justify-center md:justify-start gap-4">
+          <a href="{% url 'my_profile' %}" 
+             class="inline-flex items-center gap-2 px-6 py-3 bg-gold text-gray-900 rounded-xl font-bold hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Editar perfil
+          </a>
+          <a href="https://moodle.kukulkan41.org" target="_blank"
+             class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:border-gold hover:text-gold transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            Ir a Moodle
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard del miembro -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  
+  <!-- Grid de cards -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    
+    <!-- Mis cursos -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-2xl">📚</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Mis cursos</h2>
+      </div>
+      
+      {% if my_courses %}
+      <div class="space-y-3 mb-4">
+        {% for course in my_courses|slice:":3" %}
+        <a href="{% url 'course_detail' course.slug %}" class="block p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-xs text-gold">{{ course.get_grado_destinatario_display }}</span>
+              <h3 class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ course.titulo }}</h3>
+            </div>
+            <span class="text-gold text-xs">Ver →</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      <a href="{% url 'education' %}" class="text-sm text-gold hover:underline flex items-center gap-1">
+        Ver todos los cursos
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+      {% else %}
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">No estás inscrito en ningún curso.</p>
+      <a href="{% url 'education' %}" class="text-sm text-gold hover:underline">Explorar cursos →</a>
+      {% endif %}
+    </div>
+    
+    <!-- Próximos eventos -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-2xl">📅</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Próximos eventos</h2>
+      </div>
+      
+      {% if upcoming_events %}
+      <div class="space-y-3 mb-4">
+        {% for event in upcoming_events|slice:":3" %}
+        <a href="{% url 'event_detail' event.slug %}" class="block p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors">
+          <div class="flex items-start gap-3">
+            <div class="flex-shrink-0 w-10 text-center">
+              <span class="text-lg font-bold text-gold">{{ event.fecha_inicio|date:"d" }}</span>
+              <span class="text-xs uppercase text-gray-500 block">{{ event.fecha_inicio|date:"M" }}</span>
+            </div>
+            <div>
+              <span class="text-xs text-gold">{{ event.get_tipo_display }}</span>
+              <h3 class="font-medium text-gray-900 dark:text-white text-sm">{{ event.titulo|truncatechars:30 }}</h3>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      <a href="{% url 'calendar' %}" class="text-sm text-gold hover:underline flex items-center gap-1">
+        Ver calendario
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+      {% else %}
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">No hay eventos próximos.</p>
+      <a href="{% url 'calendar' %}" class="text-sm text-gold hover:underline">Ver calendario →</a>
+      {% endif %}
+    </div>
+    
+    <!-- Documentos privados -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-2xl">📜</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Documentos</h2>
+      </div>
+      
+      {% if private_documents %}
+      <div class="space-y-3 mb-4">
+        {% for doc in private_documents|slice:":3" %}
+        <a href="{{ doc.archivo.url }}" target="_blank" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gold/5 transition-colors group">
+          <div class="flex items-center gap-2">
+            <span class="text-xl text-gold/70 group-hover:text-gold">
+              {% if doc.tipo == 'acta' %}📄
+              {% elif doc.tipo == 'ritual' %}🔮
+              {% elif doc.tipo == 'plancha' %}✍️
+              {% else %}📁
+              {% endif %}
+            </span>
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-white text-sm truncate max-w-[150px]">{{ doc.titulo }}</h3>
+              <span class="text-xs text-gray-500">{{ doc.fecha|date:"Y"|default:"—" }}</span>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-gray-400 group-hover:text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+        </a>
+        {% endfor %}
+      </div>
+      <span class="text-sm text-gray-500">+ {{ private_documents|length|add:"-3" }} documentos más</span>
+      {% else %}
+      <p class="text-gray-600 dark:text-gray-400 text-sm">No hay documentos disponibles.</p>
+      {% endif %}
+    </div>
+    
+    <!-- Mi perfil -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-2xl">∴</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Mi perfil</h2>
+      </div>
+      
+      <div class="space-y-3 mb-4">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">Grado:</span>
+          <span class="text-sm font-bold text-gray-900 dark:text-white">{{ member.grado_actual.nombre }} ({{ member.grado_actual.numero }}°)</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">Iniciación:</span>
+          <span class="text-sm text-gray-900 dark:text-white">{{ member.fecha_iniciacion|date:"d/m/Y" }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">Antigüedad:</span>
+          <span class="text-sm text-gray-900 dark:text-white">{{ member.antiguedad_anios }} años</span>
+        </div>
+        {% if member.cargo_actual %}
+        <div class="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
+          <span class="text-sm text-gray-600 dark:text-gray-400">Cargo:</span>
+          <span class="text-sm font-bold text-gold">{{ member.cargo_actual.nombre }}</span>
+        </div>
+        {% endif %}
+      </div>
+      
+      <a href="{% url 'my_profile' %}" class="text-sm text-gold hover:underline flex items-center gap-1">
+        Ver perfil completo
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    
+    <!-- Tenida regular -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-2xl">⌖</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Próxima tenida</h2>
+      </div>
+      
+      {% if tenida_info %}
+      <div class="text-center mb-4">
+        <span class="text-3xl font-bold text-gold">{{ tenida_info.get_dia_semana_display }}</span>
+        <p class="text-lg text-gray-900 dark:text-white mt-2">{{ tenida_info.hora|time:"H:i" }} hrs</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ tenida_info.lugar }}</p>
+        <span class="inline-block mt-3 px-3 py-1 bg-gold/10 text-gold text-xs rounded-full">
+          {{ tenida_info.get_grado_display }}
+        </span>
+      </div>
+      {% else %}
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Todos los lunes · 19:30 hrs</p>
+      <p class="text-sm text-gray-500">Templo Masónico "Renacimiento"</p>
+      {% endif %}
+    </div>
+    
+    <!-- Biblioteca -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-2xl">📖</span>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Biblioteca</h2>
+      </div>
+      
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+        Accede a nuestra colección de textos masónicos, rituales y documentos históricos.
+      </p>
+      
+      <a href="{% url 'education' %}#biblioteca" class="text-sm text-gold hover:underline flex items-center gap-1">
+        Explorar biblioteca
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Actividad reciente -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="bg-gradient-to-br from-gold/5 to-borgoña/5 rounded-3xl p-8 md:p-12 border border-gold/20">
+    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+      Actividad reciente en la Logia
+    </h2>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+      <div class="p-4">
+        <span class="text-3xl text-gold mb-2 block">📝</span>
+        <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_publicaciones|default:'12' }}</span>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Publicaciones este mes</p>
+      </div>
+      <div class="p-4">
+        <span class="text-3xl text-gold mb-2 block">🎓</span>
+        <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_cursos_activos|default:'8' }}</span>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Cursos activos</p>
+      </div>
+      <div class="p-4">
+        <span class="text-3xl text-gold mb-2 block">⌖</span>
+        <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_tenidas|default:'4' }}</span>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Tenidas en el mes</p>
+      </div>
+      <div class="p-4">
+        <span class="text-3xl text-gold mb-2 block">🤝</span>
+        <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_miembros_nuevos|default:'3' }}</span>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Nuevos hermanos</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Herramientas rápidas -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="flex flex-wrap justify-center gap-4">
+    <a href="{% url 'directory' %}" class="px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl hover:border-gold hover:text-gold transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      Directorio
+    </a>
+    <a href="{% url 'calendar' %}" class="px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl hover:border-gold hover:text-gold transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Calendario
+    </a>
+    <a href="{% url 'contact' %}" class="px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl hover:border-gold hover:text-gold transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      Secretaría
+    </a>
+    <a href="#" class="px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl hover:border-gold hover:text-gold transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+      </svg>
+      Solicitar grado
+    </a>
+  </div>
+</section>
+{% endblock %}

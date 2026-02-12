@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+
+{% block title %}Masonería | Panorama Global - {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}Panorama general de la masonería: qué es, historia, logias alrededor del mundo, en México, Yucatán, y nuestra Logia Kukulkan #41. Una visión completa de la fraternidad masónica.{% endblock %}
+
+{% block extra_css %}
+<style>
+  .world-map-dot {
+    position: relative;
+  }
+  .world-map-dot::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: {{ configuracion.color_secundario|default:'#FFD700' }};
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+    100% { opacity: 0.6; transform: scale(1); }
+  }
+  .tab-active {
+    border-bottom: 2px solid {{ configuracion.color_secundario|default:'#FFD700' }};
+    color: {{ configuracion.color_secundario|default:'#FFD700' }};
+  }
+  .interactive-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .interactive-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -12px {{ configuracion.color_secundario|default:'#FFD700' }}30;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section con panorama general -->
+<section class="relative overflow-hidden bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10">
+  <div class="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 left-0 w-64 h-64 bg-borgoña/10 rounded-full blur-3xl"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+    <div class="max-w-4xl">
+      <span class="text-gold uppercase tracking-[0.3em] text-sm font-bold mb-6 block">
+        Institución Universal
+      </span>
+      
+      {% if freemasonry_page %}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mt-4 mb-6 leading-tight">
+          {{ freemasonry_page.titulo }}
+        </h1>
+        {% if freemasonry_page.subtitulo %}
+          <p class="text-gray-600 dark:text-gray-400 text-xl md:text-2xl max-w-3xl leading-relaxed">
+            {{ freemasonry_page.subtitulo }}
+          </p>
+        {% endif %}
+      {% else %}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mt-4 mb-6 leading-tight">
+          Panorama de la<br>Masonería
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400 text-xl md:text-2xl max-w-3xl leading-relaxed">
+          La masonería es la más antigua y numerosa fraternidad del mundo, una institución 
+          iniciática, filosófica y filantrópica que desde el siglo XVII promueve la búsqueda 
+          de la verdad, el estudio de la moral y el desarrollo de la solidaridad humana.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PRINCIPIOS INTEGRADOS (100% DINÁMICOS) -->
+<!-- ============================================ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-16">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Los valores que nos unen ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4 mb-6">
+      Sobre el <span class="text-borgoña dark:text-gold">yunque</span> y el <span class="text-borgoña dark:text-gold">cincel</span>
+    </h2>
+    <p class="max-w-3xl mx-auto text-gray-600 dark:text-gray-400 text-lg">
+      Nuestros principios no son meras palabras inscritas en pergaminos; son herramientas 
+      de trabajo diario para construir una versión mejor de nosotros mismos.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-12">
+    
+    <!-- Columna del Norte -->
+    <div class="space-y-8">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-16 h-16 bg-borgoña/10 rounded-2xl flex items-center justify-center">
+          <span class="text-borgoña dark:text-gold text-3xl">☽</span>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Columna del Norte</h2>
+          <p class="text-gray-600 dark:text-gray-400">Sabiduría y fortaleza</p>
+        </div>
+      </div>
+      
+      {% for principio in north_principles %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 hover:border-gold/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+            <span class="text-gold text-3xl">{{ principio.simbolo|default:'∴' }}</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{{ principio.titulo }}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+              {{ principio.descripcion_larga|default:principio.descripcion_corta }}
+            </p>
+            {% if principio.frase %}
+              <span class="text-gold text-sm italic">"{{ principio.frase }}"</span>
+              {% if principio.autor_frase %}
+                <span class="text-xs text-gray-500 dark:text-gray-500 block mt-1">— {{ principio.autor_frase }}</span>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <!-- Este fallback solo se muestra si no hay principios en la BD -->
+      <div class="text-center py-8 text-gray-500">
+        No hay principios configurados en el admin.
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Columna del Sur -->
+    <div class="space-y-8">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center">
+          <span class="text-gold text-3xl">☀</span>
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Columna del Sur</h2>
+          <p class="text-gray-600 dark:text-gray-400">Belleza y conocimiento</p>
+        </div>
+      </div>
+      
+      {% for principio in south_principles %}
+      <div class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 hover:border-gold/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
+        <div class="flex items-start gap-6">
+          <div class="w-16 h-16 bg-gold/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+            <span class="text-gold text-3xl">{{ principio.simbolo|default:'⌖' }}</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">{{ principio.titulo }}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-4">
+              {{ principio.descripcion_larga|default:principio.descripcion_corta }}
+            </p>
+            {% if principio.frase %}
+              <span class="text-gold text-sm italic">"{{ principio.frase }}"</span>
+              {% if principio.autor_frase %}
+                <span class="text-xs text-gray-500 dark:text-gray-500 block mt-1">— {{ principio.autor_frase }}</span>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-8 text-gray-500">
+        No hay principios configurados en el admin.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Principios centrales (Filantropía) -->
+  {% if central_principles %}
+  <div class="mt-20">
+    {% for principio in central_principles %}
+    <div class="relative max-w-4xl mx-auto">
+      <div class="absolute inset-0 bg-gradient-to-r from-gold/5 to-borgoña/5 rounded-4xl blur-2xl"></div>
+      <div class="relative bg-white dark:bg-gray-900 rounded-3xl border-2 border-gold/30 p-12 text-center">
+        <div class="w-20 h-20 bg-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <span class="text-gold text-4xl">{{ principio.simbolo|default:'❤️' }}</span>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{{ principio.titulo }}</h3>
+        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          {{ principio.descripcion_larga|default:principio.descripcion_corta }}
+        </p>
+        {% if principio.frase %}
+        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
+          <span class="text-gold text-lg font-serif italic">"{{ principio.frase }}"</span>
+          {% if principio.autor_frase %}
+            <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">— {{ principio.autor_frase }}</p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Juramento masónico -->
+  <div class="max-w-4xl mx-auto mt-20 text-center">
+    <p class="text-sm text-gray-500 dark:text-gray-500 uppercase tracking-[0.3em] mb-6">Juramento del masón</p>
+    <blockquote class="text-2xl md:text-3xl font-light text-gray-700 dark:text-gray-300 italic max-w-3xl mx-auto leading-relaxed border-l-4 border-gold pl-8 text-left">
+      "Prometo buscar la verdad, practicar la virtud, trabajar por la felicidad de mis semejantes 
+      y vivir con dignidad hasta el último de mis días."
+    </blockquote>
+    <p class="mt-6 text-gray-600 dark:text-gray-400">— Tradición masónica universal</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- QUÉ ES LA MASONERÍA -->
+<!-- ============================================ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50 dark:bg-gray-900/50 rounded-4xl">
+  <div class="grid md:grid-cols-2 gap-12 items-start">
+    <div class="space-y-6">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white border-l-4 border-gold pl-6">
+        ¿Qué es la Masonería?
+      </h2>
+      <div class="space-y-4 text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+        <p>
+          La masonería se define a sí misma como <span class="text-gold font-semibold">"un sistema moral ilustrado por símbolos"</span>. 
+          Sus miembros, unidos por lazos fraternales, trabajan en logias bajo los principios de 
+          libertad, igualdad y fraternidad.
+        </p>
+        <p>
+          Lejos de los mitos y leyendas urbanas, la masonería contemporánea es una institución 
+          transparente que admite en su seno a hombres y mujeres de todas las creencias y orígenes, 
+          con el único requisito de creer en un Principio Creador y tener ánimo de superación.
+        </p>
+        <p>
+          Su método de trabajo es simbólico: a través de herramientas y alegorías de la 
+          construcción medieval, el masón trabaja en el "templo interior" puliendo su carácter 
+          y contribuyendo al progreso de la humanidad.
+        </p>
+      </div>
+    </div>
+    
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-lg">
+      <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+        <span class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center">
+          <span class="text-gold text-xl">⌖</span>
+        </span>
+        Principios Fundamentales
+      </h3>
+      <div class="space-y-4">
+        <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <span class="text-gold text-2xl leading-none">•</span>
+          <div>
+            <span class="text-gray-900 dark:text-white font-medium block">Tolerancia:</span>
+            <span class="text-gray-600 dark:text-gray-400">Respeto absoluto a la libertad de conciencia</span>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <span class="text-gold text-2xl leading-none">•</span>
+          <div>
+            <span class="text-gray-900 dark:text-white font-medium block">Laicidad:</span>
+            <span class="text-gray-600 dark:text-gray-400">Separación de lo espiritual y lo temporal</span>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <span class="text-gold text-2xl leading-none">•</span>
+          <div>
+            <span class="text-gray-900 dark:text-white font-medium block">Filantropía:</span>
+            <span class="text-gray-600 dark:text-gray-400">Ayuda desinteresada a la sociedad</span>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <span class="text-gold text-2xl leading-none">•</span>
+          <div>
+            <span class="text-gray-900 dark:text-white font-medium block">Progreso:</span>
+            <span class="text-gray-600 dark:text-gray-400">Búsqueda constante de la mejora intelectual y moral</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- LOGIAS DINÁMICAS - MUNDO, MÉXICO, YUCATÁN -->
+<!-- ============================================ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+      Logias alrededor del <span class="text-gold">Mundo</span>
+    </h2>
+    
+    <!-- Tabs de navegación -->
+    <div class="flex gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg self-start">
+      <button onclick="showTab('world')" id="tab-world-btn" class="tab-active px-6 py-2 rounded-md text-sm font-medium transition-all">
+        Mundo ({{ world_lodges.count }})
+      </button>
+      <button onclick="showTab('mexico')" id="tab-mexico-btn" class="px-6 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gold transition-all">
+        México ({{ mexico_lodges.count }})
+      </button>
+      <button onclick="showTab('yucatan')" id="tab-yucatan-btn" class="px-6 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gold transition-all">
+        Yucatán ({{ yucatan_lodges.count }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenido: Logias del Mundo -->
+  <div id="world-content" class="block">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for lodge in world_lodges %}
+      <div class="interactive-card bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-xl">
+        <div class="w-14 h-14 bg-gold/10 rounded-full flex items-center justify-center mb-4 text-3xl">
+          {{ lodge.bandera }}
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ lodge.nombre }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-500 mb-1">{{ lodge.ubicacion }}</p>
+        {% if lodge.fundacion %}
+          <p class="text-xs text-gold mb-2">Fundada en {{ lodge.fundacion }}</p>
+        {% endif %}
+        <p class="text-sm text-gray-600 dark:text-gray-400">{{ lodge.descripcion }}</p>
+      </div>
+      {% empty %}
+      <div class="col-span-full text-center py-12 text-gray-500">
+        No hay logias del mundo configuradas en el admin.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Contenido: Logias de México -->
+  <div id="mexico-content" class="hidden">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for lodge in mexico_lodges %}
+      <div class="interactive-card bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-xl">
+        <div class="w-14 h-14 bg-gold/10 rounded-full flex items-center justify-center mb-4">
+          <span class="text-gold text-2xl">{{ lodge.bandera }}</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ lodge.nombre }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-500 mb-2">{{ lodge.ubicacion }}</p>
+        {% if lodge.fundacion %}
+          <p class="text-xs text-gold mb-2">Fundada en {{ lodge.fundacion }}</p>
+        {% endif %}
+        <p class="text-sm text-gray-600 dark:text-gray-400">{{ lodge.descripcion }}</p>
+      </div>
+      {% empty %}
+      <div class="col-span-full text-center py-12 text-gray-500">
+        No hay logias de México configuradas en el admin.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Contenido: Logias de Yucatán -->
+  <div id="yucatan-content" class="hidden">
+    <div class="grid sm:grid-cols-2 gap-6">
+      {% for lodge in yucatan_lodges %}
+      <div class="interactive-card bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gold/50 hover:shadow-xl">
+        <div class="w-14 h-14 bg-gold/10 rounded-full flex items-center justify-center mb-4">
+          <span class="text-gold text-2xl">{{ lodge.bandera }}</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ lodge.nombre }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-500 mb-2">{{ lodge.ubicacion }}</p>
+        {% if lodge.fundacion %}
+          <p class="text-xs text-gold mb-2">Fundada en {{ lodge.fundacion }}</p>
+        {% endif %}
+        <p class="text-sm text-gray-600 dark:text-gray-400">{{ lodge.descripcion }}</p>
+      </div>
+      {% empty %}
+      <div class="col-span-full text-center py-12 text-gray-500">
+        No hay logias de Yucatán configuradas en el admin.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- LOGIA KUKULKAN #41 - 100% DINÁMICA -->
+<!-- ============================================ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="relative overflow-hidden rounded-3xl border-2 border-gold/30 bg-gradient-to-br from-borgoña/5 to-gold/5 dark:from-borgoña/10 dark:to-gold/10 p-10 md:p-16">
+    <div class="absolute -top-20 -right-20 w-64 h-64 bg-gold/20 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-borgoña/20 rounded-full blur-3xl"></div>
+    
+    <div class="relative z-10 flex flex-col lg:flex-row gap-12 items-start">
+      <div class="lg:w-2/3 space-y-6">
+        <div class="flex items-center gap-4">
+          <span class="text-6xl">🌴</span>
+          <div>
+            <span class="text-gold uppercase tracking-wider text-sm font-bold">Logia al Oriente de Mérida</span>
+            <h3 class="text-white text-4xl md:text-5xl font-bold mt-2">
+              {{ kukulkan_lodge.full_name }}
+            </h3>
+          </div>
+        </div>
+        
+        <p class="text-gray-700 dark:text-gray-300 text-xl leading-relaxed">
+          Fundada en <span class="text-gold font-bold">{{ kukulkan_lodge.founded }}</span>, 
+          {{ kukulkan_lodge.full_name }} es una de las logias 
+          más dinámicas del sureste mexicano. Trabajamos bajo los auspicios de la Gran Logia "La Oriental" 
+          Peninsular, manteniendo viva la tradición masónica con una visión contemporánea.
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
+          <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 text-center">
+            <span class="text-gold text-3xl font-bold">{{ kukulkan_lodge.members }}</span>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Miembros activos</p>
+          </div>
+          <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 text-center">
+            <span class="text-gold text-3xl font-bold">{{ kukulkan_lodge.avg_degree }}</span>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Grado promedio</p>
+          </div>
+          <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 text-center">
+            <span class="text-gold text-3xl font-bold">{{ kukulkan_lodge.workshops }}</span>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Talleres</p>
+          </div>
+          <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 text-center">
+            <span class="text-gold text-3xl font-bold">{{ kukulkan_lodge.years }}</span>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Años de la Logia</p>
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <h4 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
+            <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+              <span class="text-gold">∴</span>
+            </span>
+            Actividades humanísticas
+          </h4>
+          <ul class="grid sm:grid-cols-2 gap-3">
+            {% for activity in kukulkan_lodge.activities %}
+            <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+              <span class="text-gold text-xl">{{ activity.icono|default:'→' }}</span>
+              {{ activity.titulo }}
+              {% if activity.descripcion %}
+                <span class="text-xs text-gray-500">({{ activity.descripcion }})</span>
+              {% endif %}
+            </li>
+            {% empty %}
+            <li class="col-span-2 text-center text-gray-500 py-4">
+              No hay actividades registradas
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      
+      <!-- ======================================== -->
+      <!-- TENIDA REGULAR - 100% DINÁMICA -->
+      <!-- ======================================== -->
+      <div class="lg:w-1/3 bg-white dark:bg-gray-900 p-8 rounded-2xl border-2 border-gold/30 shadow-xl">
+        <div class="text-center mb-6">
+          <span class="inline-block px-4 py-2 bg-gold/10 rounded-full text-gold text-sm font-medium mb-4">
+            Tenida regular
+          </span>
+          <h5 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ kukulkan_lodge.meeting_day }}
+          </h5>
+          <p class="text-lg text-gold mt-2">{{ kukulkan_lodge.meeting_time }}</p>
+          {% if kukulkan_lodge.meeting_grado %}
+          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            {{ kukulkan_lodge.meeting_grado }}
+          </p>
+          {% endif %}
+        </div>
+        
+        <div class="space-y-3 text-gray-600 dark:text-gray-400">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>{{ kukulkan_lodge.temple }}</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>{{ kukulkan_lodge.address }}</span>
+          </div>
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <p class="text-gold text-sm italic text-center">
+            "Pulir la piedra bruta para construir el templo interior"
+          </p>
+        </div>
+        
+        <div class="mt-6">
+          <a href="{% url 'directory' %}" 
+             class="block w-full bg-gold hover:bg-gold/90 text-gray-900 font-bold py-3 px-6 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            Conoce a nuestros hermanos
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- MISIÓN Y VISIÓN -->
+<!-- ============================================ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="grid md:grid-cols-2 gap-8">
+    <div class="bg-gradient-to-br from-gold/5 to-transparent p-8 rounded-2xl border border-gold/20">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-3xl">⚡</span>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Misión</h2>
+      </div>
+      <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+        Promover la mejora personal de sus miembros a través del estudio comparado de las tradiciones 
+        iniciáticas, la reflexión filosófica y la práctica de la fraternidad universal.
+      </p>
+    </div>
+    
+    <div class="bg-gradient-to-br from-gold/5 to-transparent p-8 rounded-2xl border border-gold/20">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-gold/10 rounded-xl flex items-center justify-center">
+          <span class="text-gold text-3xl">🎯</span>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Visión</h2>
+      </div>
+      <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+        Ser un referente de crecimiento humano y educativo dentro de la comunidad masónica y la 
+        sociedad yucateca, formando hombres libres y de buenas costumbres comprometidos con el progreso social.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SCRIPT PARA TABS -->
+<!-- ============================================ -->
+<script>
+function showTab(tab) {
+  // Ocultar todos los contenidos
+  document.getElementById('world-content').classList.add('hidden');
+  document.getElementById('mexico-content').classList.add('hidden');
+  document.getElementById('yucatan-content').classList.add('hidden');
+  
+  // Remover clase active de todos los botones
+  document.getElementById('tab-world-btn').classList.remove('tab-active');
+  document.getElementById('tab-mexico-btn').classList.remove('tab-active');
+  document.getElementById('tab-yucatan-btn').classList.remove('tab-active');
+  
+  // Agregar estilos por defecto
+  document.getElementById('tab-world-btn').classList.add('text-gray-600', 'dark:text-gray-400');
+  document.getElementById('tab-mexico-btn').classList.add('text-gray-600', 'dark:text-gray-400');
+  document.getElementById('tab-yucatan-btn').classList.add('text-gray-600', 'dark:text-gray-400');
+  
+  // Mostrar el tab seleccionado y activar su botón
+  document.getElementById(tab + '-content').classList.remove('hidden');
+  document.getElementById('tab-' + tab + '-btn').classList.add('tab-active');
+  document.getElementById('tab-' + tab + '-btn').classList.remove('text-gray-600', 'dark:text-gray-400');
+}
+
+// Activar primer tab por defecto
+document.addEventListener('DOMContentLoaded', function() {
+  showTab('world');
+});
+</script>
+
+{% endblock %}

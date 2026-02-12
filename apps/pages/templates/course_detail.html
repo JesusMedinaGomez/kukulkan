@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.titulo }} | Educación - {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}{% endblock %}
+
+{% block meta_description %}{{ course.descripcion_corta }}{% endblock %}
+
+{% block content %}
+
+<!-- Hero del curso -->
+<section class="relative bg-gradient-to-br from-borgoña/20 to-gold/20 overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 right-20 w-64 h-64 bg-gold/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-64 h-64 bg-borgoña/10 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="flex flex-col lg:flex-row gap-12 items-start">
+      
+      <!-- Información del curso -->
+      <div class="lg:w-2/3">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="px-4 py-2 bg-gold/10 text-gold text-sm rounded-full font-medium">
+            {% if course.grado_destinatario == 'aprendiz' %}∴ Aprendiz
+            {% elif course.grado_destinatario == 'companero' %}⌖ Compañero
+            {% elif course.grado_destinatario == 'maestro' %}◈ Maestro
+            {% else %}⚜️ Todos los grados
+            {% endif %}
+          </span>
+          {% if course.destacado %}
+          <span class="px-4 py-2 bg-borgoña/20 text-borgoña dark:text-gold text-sm rounded-full font-medium">
+            ★ Destacado
+          </span>
+          {% endif %}
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          {{ course.titulo }}
+        </h1>
+        
+        <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+          {{ course.descripcion_corta }}
+        </p>
+        
+        <div class="flex flex-wrap items-center gap-6 text-sm">
+          {% if course.instructor %}
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-gold/10 rounded-full flex items-center justify-center">
+              <span class="text-gold font-bold">{{ course.instructor.nombre_masonico|first|default:'I' }}</span>
+            </div>
+            <div>
+              <span class="block text-white font-medium">Instructor</span>
+              <span class="text-xs text-gray-400">
+                {{ course.instructor.nombre_masonico|default:course.instructor.nombre_completo }}
+              </span>
+            </div>
+          </div>
+          {% endif %}
+          
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-gray-300">{{ course.lecciones }} lecciones</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-gray-300">{{ course.duracion_horas }} horas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Card de Moodle - VERSIÓN SIMPLIFICADA -->
+      <div class="lg:w-1/3 bg-gray-900 rounded-2xl border-2 border-gold/30 p-8 shadow-xl">
+        <div class="text-center mb-6">
+          <span class="text-4xl text-gold mb-4 block">
+            {% if course.grado_destinatario == 'aprendiz' %}∴
+            {% elif course.grado_destinatario == 'companero' %}⌖
+            {% elif course.grado_destinatario == 'maestro' %}◈
+            {% else %}⚜️
+            {% endif %}
+          </span>
+          <h3 class="text-2xl font-bold text-white mb-2">
+            Accede al curso
+          </h3>
+          <p class="text-sm text-gray-400">
+            Todo el contenido está disponible en nuestra plataforma virtual
+          </p>
+        </div>
+        
+        <!-- SOLO BOTÓN A MOODLE - SIN SISTEMA DE INSCRIPCIÓN -->
+        {% if course.url_moodle %}
+          <a href="{{ course.url_moodle }}" target="_blank" 
+             class="block w-full bg-gold hover:bg-gold/90 text-gray-900 font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl text-center mb-4">
+            Ir al curso en Moodle
+          </a>
+        {% else %}
+          <div class="w-full bg-gray-800 text-gray-400 font-bold py-4 px-6 rounded-xl text-center mb-4 cursor-not-allowed">
+            Próximamente
+          </div>
+        {% endif %}
+        
+        <p class="text-xs text-center text-gray-500">
+          Accede con tu usuario y contraseña de Moodle
+        </p>
+        
+        {% if course.fecha_inicio %}
+        <div class="mt-6 pt-6 border-t border-gray-800">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-400">Inicio:</span>
+            <span class="font-medium text-white">{{ course.fecha_inicio|date:"d/m/Y" }}</span>
+          </div>
+          {% if course.fecha_fin %}
+          <div class="flex justify-between text-sm mt-2">
+            <span class="text-gray-400">Finalización:</span>
+            <span class="font-medium text-white">{{ course.fecha_fin|date:"d/m/Y" }}</span>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Descripción larga -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">⌖</span>
+    </span>
+    Acerca del curso
+  </h2>
+  <div class="prose prose-invert max-w-none">
+    {{ course.descripcion_larga|linebreaks }}
+  </div>
+</section>
+
+<!-- Materiales del curso -->
+{% if materials %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-gray-800">
+  <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+    <span class="w-8 h-8 bg-gold/10 rounded-lg flex items-center justify-center">
+      <span class="text-gold">📚</span>
+    </span>
+    Materiales del curso
+  </h2>
+  
+  <div class="space-y-3">
+    {% for material in materials %}
+    <div class="group flex items-center justify-between p-4 bg-gray-800 rounded-xl hover:bg-gold/5 transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <span class="text-2xl text-gold/70 group-hover:text-gold transition-colors">
+          {% if material.tipo == 'documento' %}📄
+          {% elif material.tipo == 'video' %}🎥
+          {% elif material.tipo == 'presentacion' %}📊
+          {% elif material.tipo == 'audio' %}🎧
+          {% elif material.tipo == 'enlace' %}🔗
+          {% elif material.tipo == 'libro' %}📖
+          {% else %}📁
+          {% endif %}
+        </span>
+        <div>
+          <h4 class="font-medium text-white group-hover:text-gold transition-colors">
+            {{ material.titulo }}
+          </h4>
+          {% if material.descripcion %}
+          <p class="text-xs text-gray-400">{{ material.descripcion|truncatechars:60 }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <a href="{% if material.archivo %}{{ material.archivo.url }}{% else %}{{ material.url_externa }}{% endif %}" 
+         target="_blank"
+         class="px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-sm font-medium hover:border-gold hover:text-gold transition-colors flex items-center gap-2">
+        {% if material.descargable %}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          Descargar
+        {% else %}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+          Ver
+        {% endif %}
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Plataforma Moodle (sección adicional) -->
+{% if course.url_moodle %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-gray-800">
+  <div class="bg-gradient-to-br from-gold/10 to-borgoña/10 rounded-2xl p-8 text-center">
+    <h3 class="text-2xl font-bold text-white mb-4">
+      Accede a la plataforma virtual
+    </h3>
+    <p class="text-gray-300 mb-6">
+      Este curso cuenta con contenido interactivo en nuestra plataforma Moodle.
+    </p>
+    <a href="{{ course.url_moodle }}" target="_blank"
+       class="inline-flex items-center gap-2 bg-gold text-gray-900 px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+      </svg>
+      Ir a Moodle
+    </a>
+  </div>
+</section>
+{% endif %}
+
+<!-- Cursos relacionados -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-12">
+    <span class="text-gold text-sm uppercase tracking-[0.3em] font-bold">∴ Formación continua ∴</span>
+    <h2 class="text-3xl md:text-4xl font-bold text-white mt-4">
+      Otros cursos que pueden interesarte
+    </h2>
+  </div>
+  
+  <div class="grid md:grid-cols-3 gap-6">
+    {% for related in related_courses %}
+    <a href="{% url 'course_detail' related.slug %}" 
+       class="group bg-gray-900 rounded-xl border border-gray-800 p-6 hover:border-gold/50 hover:shadow-xl transition-all duration-300">
+      <span class="text-3xl text-gold mb-4 block">
+        {% if related.grado_destinatario == 'aprendiz' %}∴
+        {% elif related.grado_destinatario == 'companero' %}⌖
+        {% elif related.grado_destinatario == 'maestro' %}◈
+        {% else %}⚜️
+        {% endif %}
+      </span>
+      <h3 class="text-lg font-bold text-white mb-2 group-hover:text-gold transition-colors">
+        {{ related.titulo }}
+      </h3>
+      <p class="text-sm text-gray-400 mb-4 line-clamp-2">
+        {{ related.descripcion_corta }}
+      </p>
+      <span class="text-gold text-sm font-medium group-hover:gap-2 transition-all inline-flex items-center gap-1">
+        Ver curso
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </span>
+    </a>
+    {% empty %}
+    <div class="col-span-3 text-center py-12">
+      <p class="text-gray-400">Próximamente más cursos</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
