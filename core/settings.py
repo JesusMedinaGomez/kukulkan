@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Project apps
     'apps.pages',
-    'apps.publications',
     'ckeditor',
     'tinymce',
 ]
