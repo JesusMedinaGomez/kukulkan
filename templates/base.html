@@ -1,20 +1,27 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="{% block meta_description %}{{ configuracion.meta_descripcion|default:'Logia Masónica Kukulkan #41 - Mérida, Yucatán' }}{% endblock %}">
   <meta name="keywords" content="{% block meta_keywords %}{{ configuracion.meta_keywords|default:'masonería, logia, kukulkan, mérida, yucatán, fraternidad' }}{% endblock %}">
-  <meta name="theme-color" content="{{ configuracion.color_primario|default:'#7b1e3a' }}">
+  <meta name="theme-color" content="{{ configuracion.color_secundario|default:'#FFD700' }}">
   
   <title>{% block title %}Logia Kukulkan #41{% endblock %}</title>
 
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fuente Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon dinámico -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,15 85,85 15,85' fill='{{ configuracion.color_primario|default:'%237b1e3a'|slice:'1:' }}'/%3E%3Cpolygon points='50,30 75,75 25,75' fill='{{ configuracion.color_secundario|default:'%23FFD700'|slice:'1:' }}'/%3E%3C/svg%3E">
 
   <script>
-    // Configuración de Tailwind con colores dinámicos
+    // ============================================
+    // CONFIGURACIÓN TAILWIND 
+    // ============================================
     tailwind.config = {
       darkMode: 'class',
       theme: {
@@ -75,25 +82,25 @@
   </script>
 
   <style>
-
+    /* ============================================
+       VARIABLES CSS 
+       ============================================ */
     :root {
-      --color-primario: {{ configuracion.color_primario|default:'#7b1e3a' }};
-      --color-secundario: {{ configuracion.color_secundario|default:'#FFD700' }};
-      --color-texto: #1f2937;
-      --color-fondo: #ffffff;
-      --color-borde: #e5e7eb;
-      --color-hover: {{ configuracion.color_primario|default:'#7b1e3a' }}20;
-    }
-
-    .dark {
-      --color-primario: {{ configuracion.color_secundario|default:'#FFD700' }};  
-      --color-secundario: {{ configuracion.color_primario|default:'#7b1e3a' }};  
+      --color-primario: {{ configuracion.color_secundario|default:'#FFD700' }};
+      --color-secundario: {{ configuracion.color_primario|default:'#7b1e3a' }};
       --color-texto: #f3f4f6;
       --color-fondo: #111827;
+      --color-fondo-oscuro: #0a0a0a;
       --color-borde: #1f2937;
+      --color-borde-claro: #374151;
       --color-hover: {{ configuracion.color_secundario|default:'#FFD700' }}20;
+      --color-gris-texto: #9ca3af;
+      --color-gris-claro: #d1d5db;
     }
 
+    /* ============================================
+       ESTILOS GLOBALES
+       ============================================ */
     html { 
       scroll-behavior: smooth; 
     }
@@ -104,16 +111,17 @@
       -moz-osx-font-smoothing: grayscale;
       background-color: var(--color-fondo);
       color: var(--color-texto);
-      transition: background-color 0.3s, color 0.3s;
     }
 
-
+    /* ============================================
+       PROSE 
+       ============================================ */
     .prose * { 
       font-family: 'Inter', sans-serif !important; 
     }
     
     .prose h1, .prose h2, .prose h3, .prose h4 {
-      color: inherit;
+      color: #ffffff;
       font-weight: 700;
       letter-spacing: -0.02em;
     }
@@ -121,13 +129,17 @@
     .prose h1 { font-size: 2.5rem; margin-bottom: 1.5rem; }
     .prose h2 { font-size: 2rem; margin-bottom: 1.25rem; }
     .prose h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    .prose p { line-height: 1.8; margin-bottom: 1.25rem; }
+    .prose p { 
+      line-height: 1.8; 
+      margin-bottom: 1.25rem; 
+      color: var(--color-gris-claro);
+    }
     
     .prose a {
       color: var(--color-primario);
       text-decoration: none;
       border-bottom: 1px solid transparent;
-      transition: border-color 0.2s, color 0.3s;
+      transition: border-color 0.2s;
     }
     .prose a:hover { 
       border-bottom-color: var(--color-primario); 
@@ -136,6 +148,7 @@
     .prose ul, .prose ol { 
       padding-left: 1.5rem; 
       margin-bottom: 1.25rem; 
+      color: var(--color-gris-claro);
     }
     
     .prose li { 
@@ -143,76 +156,123 @@
     }
     
     .prose blockquote {
-      border-left: 4px solid var(--color-secundario);
+      border-left: 4px solid var(--color-primario);
       padding-left: 1.5rem;
       font-style: italic;
       margin: 1.5rem 0;
-      transition: border-left-color 0.3s;
+      color: var(--color-gris-claro);
     }
 
     .prose code {
-      background: var(--color-hover);
+      background: var(--color-borde);
       padding: 0.2rem 0.4rem;
       border-radius: 0.25rem;
       font-size: 0.875em;
+      color: #f3f4f6;
     }
 
     .prose pre {
-      background: var(--color-borde);
+      background: var(--color-fondo-oscuro);
       padding: 1rem;
       border-radius: 0.5rem;
       overflow-x: auto;
+      color: #f3f4f6;
     }
 
+    .prose img {
+      border-radius: 0.5rem;
+      margin: 2rem auto;
+    }
+
+    .prose hr {
+      border-color: var(--color-borde);
+      margin: 2rem 0;
+    }
+
+    /* ============================================
+       SCROLLBAR PERSONALIZADA
+       ============================================ */
     ::-webkit-scrollbar { 
       width: 10px; 
       height: 10px; 
     }
     ::-webkit-scrollbar-track { 
-      background: #f1f1f1; 
-    }
-    .dark ::-webkit-scrollbar-track { 
-      background: #1a1a1a; 
+      background: var(--color-fondo-oscuro); 
     }
     ::-webkit-scrollbar-thumb { 
       background: var(--color-primario); 
       border-radius: 5px;
-      transition: background 0.3s;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: {{ configuracion.color_secundario|default:'#FFD700' }}cc;
     }
 
-
+    /* ============================================
+       ANIMACIONES Y EFECTOS
+       ============================================ */
     .page-transition { 
       animation: fadeIn 0.3s ease-in-out; 
     }
     
     .glass {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid var(--color-secundario)20;
-      transition: border 0.3s, background 0.3s;
-    }
-    .dark .glass {
-      background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--color-primario)20;
     }
 
-
+    /* ============================================
+       UTILIDADES DE COLOR
+       ============================================ */
     .text-primary { color: var(--color-primario); }
     .text-secondary { color: var(--color-secundario); }
+    .text-gray-custom { color: var(--color-gris-texto); }
+    .text-gray-light { color: var(--color-gris-claro); }
+    
     .bg-primary { background-color: var(--color-primario); }
     .bg-secondary { background-color: var(--color-secundario); }
+    .bg-dark { background-color: var(--color-fondo); }
+    .bg-darker { background-color: var(--color-fondo-oscuro); }
+    
     .border-primary { border-color: var(--color-primario); }
     .border-secondary { border-color: var(--color-secundario); }
+    .border-custom { border-color: var(--color-borde); }
+    
     .hover\:text-primary:hover { color: var(--color-primario); }
     .hover\:bg-primary:hover { background-color: var(--color-primario); }
     .hover\:border-primary:hover { border-color: var(--color-primario); }
+    .hover\:bg-darker:hover { background-color: var(--color-fondo-oscuro); }
+
+    /* ============================================
+       UTILIDADES ADICIONALES
+       ============================================ */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .aspect-video {
+      aspect-ratio: 16 / 9;
+    }
+
+    .aspect-square {
+      aspect-ratio: 1 / 1;
+    }
   </style>
 
   {% block extra_css %}{% endblock %}
 </head>
 
-<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col">
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
 
   {% include "partials/navbar.html" %}
 
@@ -220,19 +280,19 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer dinámico -->
-  <footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors">
+  <!-- Footer  -->
+  <footer class="bg-gray-900 border-t border-gray-800 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="flex items-center gap-3 group">
-          <span class="text-2xl lg:text-3xl text-primary transition-transform duration-300 group-hover:scale-110">
+          <span class="text-2xl lg:text-3xl text-gold transition-transform duration-300 group-hover:scale-110">
             {{ configuracion.logo_tipo|default:'∴' }}
           </span>
           <div class="flex flex-col">
-            <span class="uppercase tracking-[0.2em] text-xs lg:text-sm font-bold text-gray-900 dark:text-white">
+            <span class="uppercase tracking-[0.2em] text-xs lg:text-sm font-bold text-white">
               {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}
             </span>
-            <span class="text-[10px] lg:text-xs uppercase tracking-[0.3em] text-gray-600 dark:text-gray-400">
+            <span class="text-[10px] lg:text-xs uppercase tracking-[0.3em] text-gray-400">
               {{ configuracion.ano_fundacion|default:'1980' }} · Mérida
             </span>
           </div>
@@ -240,79 +300,36 @@
         
         <div class="flex items-center gap-6">
           {% if configuracion.facebook_url %}
-          <a href="{{ configuracion.facebook_url }}" target="_blank" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-secondary transition-colors">
+          <a href="{{ configuracion.facebook_url }}" target="_blank" class="text-gray-400 hover:text-gold transition-colors">
             <span class="sr-only">Facebook</span>
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+            </svg>
           </a>
           {% endif %}
           {% if configuracion.instagram_url %}
-          <a href="{{ configuracion.instagram_url }}" target="_blank" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-secondary transition-colors">
+          <a href="{{ configuracion.instagram_url }}" target="_blank" class="text-gray-400 hover:text-gold transition-colors">
             <span class="sr-only">Instagram</span>
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
           </a>
           {% endif %}
         </div>
       </div>
       
-      <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 text-center">
-        <p class="text-xs text-gray-500 dark:text-gray-500">
+      <div class="mt-6 pt-6 border-t border-gray-800 text-center">
+        <p class="text-xs text-gray-500">
           © {% now "Y" %} {{ configuracion.nombre_sitio|default:'Logia Kukulkan #41' }}. {{ configuracion.copyright_text|default:'Todos los derechos reservados' }}.
         </p>
         {% if frase_del_dia %}
-        <p class="text-xs text-gray-400 dark:text-gray-600 mt-2 italic">
+        <p class="text-xs text-gray-500 mt-2 italic">
           "{{ frase_del_dia.contenido|truncatechars:100 }}" — {{ frase_del_dia.autor }}
         </p>
         {% endif %}
       </div>
     </div>
   </footer>
-
-  <script>
-
-    (function() {
-      const root = document.documentElement;
-      
-      // Detectar preferencia del sistema
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      
-      // Aplicar tema inicial
-      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && prefersDark)) {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-    })();
-
-    // Toggle theme con evento personalizado
-    document.addEventListener('DOMContentLoaded', function() {
-      const root = document.documentElement;
-      const toggles = document.querySelectorAll('#theme-toggle, #theme-toggle-mobile');
-      
-      function toggleTheme(e) {
-        e.preventDefault();
-        root.classList.toggle('dark');
-        localStorage.theme = root.classList.contains('dark') ? 'dark' : 'light';
-        
-        // Disparar evento personalizado para que otros componentes reaccionen
-        window.dispatchEvent(new CustomEvent('themechange', {
-          detail: { theme: localStorage.theme }
-        }));
-      }
-
-      toggles.forEach(toggle => {
-        toggle.addEventListener('click', toggleTheme);
-      });
-      
-      // Sincronizar variables CSS con Tailwind
-      function syncTheme() {
-        const isDark = root.classList.contains('dark');
-        document.body.style.backgroundColor = isDark ? '#111827' : '#ffffff';
-        document.body.style.color = isDark ? '#f3f4f6' : '#1f2937';
-      }
-      
-      window.addEventListener('themechange', syncTheme);
-    });
-  </script>
 
   {% block extra_js %}{% endblock %}
 </body>
