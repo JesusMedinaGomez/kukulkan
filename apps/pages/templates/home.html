@@ -88,7 +88,7 @@
     {% if estadisticas_destacadas %}
       {% for stat in estadisticas_destacadas %}
         <!-- Determinar URL según el título -->
-        {% if stat.titulo == 'Miembros activos' or stat.titulo == 'Directorio' %}
+        {% if stat.titulo == 'Miembros activos'%}
           <a href="{% url 'directory' %}" class="block group">
         {% elif stat.titulo == 'Cursos activos' or stat.titulo == 'Educación' %}
           <a href="{% url 'education' %}" class="block group">
